@@ -2,8 +2,10 @@ import { Application } from '../common/engine/Application.js';
 
 import { GLTFLoader } from './GLTFLoader.js';
 import { Renderer } from './Renderer.js';
-import { wasdController } from './wasdController.js';
+import { wasdController } from './wasdController2.js';
 import { mouseController } from './mouseController.js';
+import { cameraController } from './cameraController.js';
+import { Physics } from './Physics.js';
 
 class App extends Application {
 
@@ -13,8 +15,9 @@ class App extends Application {
 
         this.scene = await this.loader.loadScene(this.loader.defaultScene);
         this.camera = await this.loader.loadNode('Camera_Orientation');
-        this.ufo = await this.loader.loadNode('UFO');
+        this.center_ufo = await this.loader.loadNode('Center_UFO');
         this.center = await this.loader.loadNode('Center')
+        
 
         if (!this.scene || !this.camera) {
             throw new Error('Scene or Camera not present in glTF');
@@ -25,7 +28,9 @@ class App extends Application {
         }
 
         this.controller = new wasdController(this.center, this.canvas);
-        this.controller2 = new mouseController(this.camera, this.canvas);
+        this.controller2 = new mouseController(this.center_ufo, this.canvas);
+        //this.controller3 = new cameraController(this.camera, this.canvas);
+        this.physics = new Physics(this.scene);
 
         this.time = performance.now();
         this.startTime = this.time;
@@ -41,6 +46,8 @@ class App extends Application {
         this.startTime = this.time;
         this.controller2.update(dt);
         this.controller.update(dt);
+        //this.controller3.update(dt);
+        this.physics.update(dt);
     }
 
     render() {

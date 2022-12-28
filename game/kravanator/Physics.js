@@ -1,7 +1,7 @@
 import { vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 export class Physics {
-    
+
     constructor(scene) {
         this.scene = scene;
     }
@@ -61,7 +61,7 @@ export class Physics {
         // Get global space AABBs.
         const aBox = this.getTransformedAABB(a);
         const bBox = this.getTransformedAABB(b);
-
+        
         // Check if there is collision.
         const isColliding = this.aabbIntersection(aBox, bBox);
         if (!isColliding) {

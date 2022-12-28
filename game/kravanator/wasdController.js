@@ -1,6 +1,6 @@
 import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
 
-export class wasdController {
+export class wasdController extends Node{
 
     constructor(node, domElement) {
         this.node = node;
@@ -12,8 +12,8 @@ export class wasdController {
         this.moveZ = 0;
 
         this.velocity = [0, 0, 0];
-        this.acceleration = 40;
-        this.maxSpeed = 200;
+        this.acceleration = 15;
+        this.maxSpeed = 40;
         this.decay = 0.9;
         this.pointerSensitivity = 0.002;
 
@@ -41,16 +41,16 @@ export class wasdController {
         // Map user input to the acceleration vector.
         const acc = vec3.create();
         if (this.keys['KeyW']) {
-            this.moveZ += 0.01;
+            this.moveZ += 0.001;
         }
         if (this.keys['KeyS']) {
-            this.moveZ -= 0.01;
+            this.moveZ -= 0.001;
         }
         if (this.keys['KeyD']) {
-            this.moveX -= 0.01;
+            this.moveX -= 0.001;
         }
         if (this.keys['KeyA']) {
-            this.moveX += 0.01;
+            this.moveX += 0.001;
         }
 
         // Update velocity based on acceleration.
@@ -92,3 +92,4 @@ export class wasdController {
     }
 
 }
+

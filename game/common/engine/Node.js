@@ -1,7 +1,6 @@
 import { vec3, mat4, quat } from '../../lib/gl-matrix-module.js';
 
 export class Node {
-
     constructor(options = {}) {
         this._translation = options.translation
             ? vec3.clone(options.translation)
@@ -15,6 +14,15 @@ export class Node {
         this._matrix = options.matrix
             ? mat4.clone(options.matrix)
             : mat4.create();
+        this.aabb = options.mesh
+        ? {
+            min: options.mesh.primitives[0].attributes.POSITION.min,
+            max: options.mesh.primitives[0].attributes.POSITION.max,
+            }
+        : {
+            min: null,
+            max: null,
+        };
 
 
         if (options.matrix) {
@@ -151,3 +159,10 @@ export class Node {
     }
 
 }
+Node.defaults = {
+    velocity: [0, 0, 0],
+    aabb: {
+        min: [0, 0, 0],
+        max: [0, 0, 0],
+    },
+};

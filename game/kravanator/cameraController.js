@@ -1,6 +1,6 @@
 import { quat, vec3, mat4 } from '../../lib/gl-matrix-module.js';
 
-export class mouseController {
+export class cameraController {
 
     constructor(node, domElement) {
         // The node that this controller controls.
@@ -11,15 +11,14 @@ export class mouseController {
 
         // This map is going to hold the pressed state for every key.
         this.move = false;
-        this.key = false;
-
-        this.limitUp = 5;
-        this.limitDown = -5;
+        this.key = true;
+        this.limitUp = 55;
+        this.limitDown = -50;
         this.currentLimit = 0;
 
         // We are going to use Euler angles for rotation.
-        this.pitch = 0;
-        this.yaw = 0;
+        this.moveUpDown = 0;
+        this.rotateUpDown = -900;
 
         // This is going to be a simple decay-based model, where
         // the user input is used as acceleration. The acceleration
@@ -30,13 +29,13 @@ export class mouseController {
         // The model needs some limits and parameters.
 
         // Acceleration in meters per second squared.
-        this.acceleration = 120;
+        this.acceleration = 50;
 
         // Maximum speed in meters per second.
-        this.maxSpeed = 60;
+        this.maxSpeed = 30;
 
         // Decay as 1 - log percent max speed loss per second.
-        this.decay = 0.99;
+        this.decay = 0.95;
 
         // Pointer sensitivity in radians per pixel.
         this.pointerSensitivity = 0.002;
@@ -50,28 +49,6 @@ export class mouseController {
         const element = this.domElement;
         const doc = element.ownerDocument;
 
-        
-        doc.addEventListener("wheel", event => console.info(event.deltaY));
-        doc.addEventListener("wheel", event => {
-            if(event.deltaY<0){
-                if(this.currentLimit<=this.limitUp){
-                    this.key = false;
-                    this.move = true;
-                    console.log("down")
-                    this.currentLimit++;
-                }
-            }
-            else{
-                if(this.currentLimit>=this.limitDown){
-                    this.key = true;
-                    this.move = true;
-                    console.log("up")
-                    this.currentLimit--;
-                }
-            }
-        });
-
-
         element.addEventListener('click', e => element.requestPointerLock());
         doc.addEventListener('pointerlockchange', e => {
             if (doc.pointerLockElement === element) {
@@ -83,17 +60,23 @@ export class mouseController {
     }
 
     update(dt) {
-        const up = [0, 1, 0];
+        const up = [0, 0, 1];
         const acc = vec3.create();
 
-        if(this.move){
+        
+        //if(this.move){
+        if(false){
             if(this.key){
                 vec3.add(acc, acc, up);
+                //console.log("zoom in")
             }
             else{
                 vec3.sub(acc, acc, up);
+                //console.log("zoom out")
+
             }
         }
+
         if(!this.move){
             const decay = Math.exp(dt * Math.log(1 - this.decay));
             vec3.scale(this.velocity, this.velocity, decay);
@@ -110,34 +93,48 @@ export class mouseController {
         this.node.translation = vec3.scaleAndAdd(vec3.create(),
             this.node.translation, this.velocity, dt);
         this.move = false;
+
    
-        // Update rotation based on the Euler angles.
-        const rotation = quat.create();
-        quat.rotateY(rotation, rotation, 0); ///////////////////zaenkrt mamo pr wasd controlerji
-        quat.rotateX(rotation, rotation, 0); //tga ne rabmo
-        this.node.rotation = rotation;
+        // Update rotation based on the Euler angles.  //<this
+        /*const rotation = quat.create();
+        quat.rotateX(rotation, rotation, this.rotateUpDown); //<this
+        this.node.rotation = rotation;*/
     }
 
     pointermoveHandler(e) {
-        const dx = e.movementX;
-        const dy = e.movementY;
-        this.pitch -= dy * this.pointerSensitivity;
-        this.yaw   -= dx * this.pointerSensitivity;
-
-        const pi = Math.PI;
-        const twopi = pi * 2;
-        const halfpi = pi / 2;
-
-        // Limit pitch so that the camera does not invert on itself.
-        if (this.pitch > halfpi) {
-            this.pitch = halfpi;
+        if(this.moveUpDown<-4){
+            if(this.currentLimit<=this.limitUp){
+                this.move = true;
+                this.key = true;
+                console.log("go up")
+                this.currentLimit++;
+                //this.rotateUpDown -= this.moveUpDown * this.pointerSensitivity; //<this
+            }
         }
-        if (this.pitch < -halfpi) {
-            this.pitch = -halfpi;
+        if(this.moveUpDown>4){
+            if(this.currentLimit>=this.limitDown){
+                this.move = true;
+                this.key = false;
+                console.log("go down")
+                this.currentLimit--;
+                //this.rotateUpDown -= this.moveUpDown * this.pointerSensitivity; //<this
+            }
         }
+        //console.log("limit:" + this.currentLimit);
+        console.log("kot: "+this.rotateUpDown);
+        this.moveUpDown = e.movementX;
+        console.log(this.moveUpDown);
 
-        // Constrain yaw to the range [0, pi * 2]
-        this.yaw = ((this.yaw % twopi) + twopi) % twopi;
+        const halfpi = Math.PI / 2; //<this
+        this.rotateUpDown -= this.moveUpDown * this.pointerSensitivity;
+        if (this.rotateUpDown > halfpi) {
+            this.rotateUpDown = halfpi;
+        }
+        if (this.rotateUpDown < -halfpi) {
+            this.rotateUpDown = -halfpi;
+        }
+        
     }
+
 
 }
