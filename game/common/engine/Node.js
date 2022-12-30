@@ -20,8 +20,8 @@ export class Node {
             max: options.mesh.primitives[0].attributes.POSITION.max,
             }
         : {
-            min: null,
-            max: null,
+            min: [-0.2, -0.2, -0.2],
+            max: [0.2, 0.2, 0.2],
         };
 
 
@@ -129,6 +129,14 @@ export class Node {
         }
     }
 
+    velocitySet(v) {
+        this.velocity = v;
+    }
+
+    velocityGet() {
+        return this.velocity;
+    }
+
     addChild(node) {
         if (node.parent) {
             node.parent.removeChild(node);
@@ -160,9 +168,8 @@ export class Node {
 
 }
 Node.defaults = {
-    velocity: [0, 0, 0],
-    aabb: {
-        min: [0, 0, 0],
-        max: [0, 0, 0],
-    },
+    translation: [0, 0, 0],
+    rotation: [0, 0, 0],
+    scale: [1, 1, 1],
+    velocity : [0, 0, 0]
 };

@@ -70,7 +70,7 @@ export class wasdController{
         const x = this.node.globalMatrix[12];
         const y = this.node.globalMatrix[13];
         const z = this.node.globalMatrix[14];
-        console.log("x: "+x+" y: "+y+" z: "+z );
+        //console.log("x: "+x+" y: "+y+" z: "+z );
         // Calculate forward and right vectors from the y-orientation.
         const cos = Math.cos(this.yaw);
         const sin = Math.sin(this.yaw);
@@ -81,9 +81,9 @@ export class wasdController{
         // Map user input to the acceleration vector.
         const acc = vec3.create();
         if (this.keys['KeyW']) {
-            console.log(vec3.transformQuat(acc,xyz,[1,0,0]));
+            //console.log(vec3.transformQuat(acc,xyz,[1,0,0]));
             
-            //vec3.sub(acc, acc, forward);
+            vec3.sub(acc, acc, forward);
         }
         if (this.keys['KeyS']) {
             vec3.add(acc, acc, forward);
@@ -123,6 +123,8 @@ export class wasdController{
         quat.rotateY(rotation, rotation, this.yaw);
         quat.rotateX(rotation, rotation, 0);
         this.node.rotation = rotation;
+
+        this.node.velocitySet(this.velocity);
     }
 
     pointermoveHandler(e) {

@@ -2,20 +2,22 @@ import { vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 export class Physics {
 
-    constructor(scene) {
+    constructor(scene, planet) {
         this.scene = scene;
+        this.planet = planet;
     }
 
     update(dt) {
         this.scene.traverse(node => {
             // Move every node with defined velocity.
             if (node.velocity) {
+
                 vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
-                node.updateMatrix();
+                node.updateTransformationMatrix();
 
                 // After moving, check for collision with every other node.
                 this.scene.traverse(other => {
-                    if (node !== other) {
+                    if (node !== other && other !== this.planet) {
                         this.resolveCollision(node, other);
                     }
                 });
@@ -35,7 +37,7 @@ export class Physics {
 
     getTransformedAABB(node) {
         // Transform all vertices of the AABB from local to global space.
-        const transform = node.getGlobalTransform();
+        const transform = node.globalMatrix;
         const { min, max } = node.aabb;
         const vertices = [
             [min[0], min[1], min[2]],
@@ -67,6 +69,7 @@ export class Physics {
         if (!isColliding) {
             return;
         }
+        console.log("colide");
 
         // Move node A minimally to avoid collision.
         const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
@@ -99,8 +102,7 @@ export class Physics {
             minDirection = [0, 0, -minDiff];
         }
 
-        vec3.add(a.translation, a.translation, minDirection);
-        a.updateMatrix();
+        a.translation = vec3.add(a.translation, a.translation, minDirection);
     }
 
 }
