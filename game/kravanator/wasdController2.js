@@ -3,9 +3,9 @@ import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
 export class wasdController{
 
     constructor(node, domElement) {
+
         // The node that this controller controls.
         this.node = node;
-
         // The activation DOM element.
         this.domElement = domElement;
 
@@ -32,7 +32,8 @@ export class wasdController{
 
         // Maximum speed in meters per second.
         this.maxSpeed = 3;
-
+        this.i=0;
+        this.j=0;
         // Decay as 1 - log percent max speed loss per second.
         this.decay = 0.9;
         this.trenuta = node.globalMatrix;
@@ -70,33 +71,62 @@ export class wasdController{
         const x = this.node.globalMatrix[12];
         const y = this.node.globalMatrix[13];
         const z = this.node.globalMatrix[14];
+
+        //let q = quat.setAxisAngle([], [0, 1, 0], this.yaw);
+        //mat4.fromQuat(this.node.globalMatrix, q);
+        
         //console.log("x: "+x+" y: "+y+" z: "+z );
         // Calculate forward and right vectors from the y-orientation.
         const cos = Math.cos(this.yaw);
         const sin = Math.sin(this.yaw);
         //const forward = vec3.transformQuat()
+        //const forward = vec3.transformQuat([], [1, 0, 0], quat);
         const forward = [-sin, 0, -cos];
         const right = [cos, 0, -sin];
+        const v = vec3.create()
 
         // Map user input to the acceleration vector.
+
+        /*this.time = performance.now() /1000;
+        let idle = quat.setAxisAngle(quat.create(), [1,0,0], [1,0,0]);
+        this.node.rotation = idle;*/
+        let idle = quat.setAxisAngle(quat.create(), [1,1,1], this.i);
+        let rot = quat.create();
         const acc = vec3.create();
+        let nek = vec3.create();
         if (this.keys['KeyW']) {
-            //console.log(vec3.transformQuat(acc,xyz,[1,0,0]));
-            
-            vec3.sub(acc, acc, forward);
+            idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
+            this.i+=0.01;
+
+            /*let q = quat.create();
+            quat.rotateY(q, q, dt * this.acceleration);
+            mat4.fromQuat(this.node.globalMatrix, q);
+            vec3.transformQuat(acc, forward, q);*/
+            //quat.rotateZ(rot, rot, this.yaw);
+            //vec3.transformQuat(v,xyz,q);
+            //vec3.sub(acc, acc, forward);
         }
         if (this.keys['KeyS']) {
-            vec3.add(acc, acc, forward);
+            idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
+            this.i-=0.01;
+            //quat.rotateZ(rot, rot, -this.yaw);
+            //vec3.add(acc, acc, forward);
         }
         if (this.keys['KeyD']) {
-            vec3.sub(acc, acc, right);
+            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.i);
+            this.i+=0.01;
+            //quat.rotateX(rot, rot, this.yaw);
+            //vec3.sub(acc, acc, right);
         }
         if (this.keys['KeyA']) {
-            vec3.add(acc, acc, right);
+            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.i);
+            this.i-=0.01;
+            //quat.rotateX(rot, rot, -this.yaw);
+            //vec3.add(acc, acc, right);
         }
 
         // Update velocity based on acceleration (first line of Euler's method).
-        vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
+        /*vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
 
         // If there is no user input, apply decay.
         if (!this.keys['KeyW'] &&
@@ -125,6 +155,8 @@ export class wasdController{
         this.node.rotation = rotation;
 
         this.node.velocitySet(this.velocity);
+        //this.node.rotation = quat.multiply(quat.create(), rot, this.node.rotation);*/
+        this.node.rotation = idle;
     }
 
     pointermoveHandler(e) {
@@ -165,6 +197,3 @@ export class wasdController{
 
 }
 
-wasdController.defaults = {
-    velocity         : [0, 0, 0],
-};
