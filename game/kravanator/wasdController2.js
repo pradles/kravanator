@@ -103,7 +103,7 @@ export class wasdController{
             mat4.fromQuat(this.node.globalMatrix, q);
             vec3.transformQuat(acc, forward, q);*/
             //quat.rotateZ(rot, rot, this.yaw);
-            //vec3.transformQuat(v,xyz,q);
+            //vec3.transformQuat(acc,[1,0,0],this.i);
             //vec3.sub(acc, acc, forward);
         }
         if (this.keys['KeyS']) {
@@ -113,20 +113,20 @@ export class wasdController{
             //vec3.add(acc, acc, forward);
         }
         if (this.keys['KeyD']) {
-            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.i);
-            this.i+=0.01;
+            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
+            this.j+=0.01;
             //quat.rotateX(rot, rot, this.yaw);
             //vec3.sub(acc, acc, right);
         }
         if (this.keys['KeyA']) {
-            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.i);
-            this.i-=0.01;
+            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
+            this.j-=0.01;
             //quat.rotateX(rot, rot, -this.yaw);
             //vec3.add(acc, acc, right);
         }
 
         // Update velocity based on acceleration (first line of Euler's method).
-        /*vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
+        vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
 
         // If there is no user input, apply decay.
         if (!this.keys['KeyW'] &&
@@ -155,7 +155,7 @@ export class wasdController{
         this.node.rotation = rotation;
 
         this.node.velocitySet(this.velocity);
-        //this.node.rotation = quat.multiply(quat.create(), rot, this.node.rotation);*/
+        //this.node.rotation = quat.multiply(quat.create(), rot, this.node.rotation);
         this.node.rotation = idle;
     }
 
