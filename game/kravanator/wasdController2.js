@@ -200,7 +200,7 @@ export class wasdController{
             this.n[0],this.n[1],this.n[2],0,
             this.t[0],this.t[1],this.t[2],0,
             0,0,0,1
-               ];            
+               ];           
         this.node.rotation = mat4.getRotation(quat.create(),this.matM);
         //this.node.translation = vec3.multiply(vec3.create(),xyz,[0,1,0])
     }
@@ -235,7 +235,7 @@ export class wasdController{
 
         // Constrain yaw to the range [0, pi * 2]
         //this.yaw = ((this.yaw % twopi) + twopi) % twopi;
-        this.leftRight = dx;
+        //this.leftRight = dx;
     }
 
     keydownHandler(e) {

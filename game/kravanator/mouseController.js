@@ -13,8 +13,8 @@ export class mouseController {
         this.move = false;
         this.key = false;
 
-        this.limitUp = 5;
-        this.limitDown = -5;
+        this.limitUp = 50;
+        this.limitDown = -50;
         this.currentLimit = 0;
 
         // We are going to use Euler angles for rotation.

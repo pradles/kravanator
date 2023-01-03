@@ -23,6 +23,8 @@ export class Node {
             min: [-0.2, -0.2, -0.2],
             max: [0.2, 0.2, 0.2],            
         };
+        if(options.name)
+            this.name = options.name
 
 
         if (options.matrix) {
@@ -42,6 +44,8 @@ export class Node {
             child.parent = this;
         }
         this.parent = null;
+
+        this.pickable = false;
     }
 
     updateTransformationComponents() {
@@ -129,6 +133,10 @@ export class Node {
         }
     }
 
+    set pickable(x){
+        this.pickable = x;
+    }
+
     velocitySet(v) {
         this.velocity = v;
     }
@@ -165,6 +173,7 @@ export class Node {
             after(this);
         }
     }
+    
     
 
 }

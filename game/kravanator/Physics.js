@@ -3,28 +3,26 @@ import { vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 export class Physics {
 
-    constructor(scene, planet, ufo, cylinder) {
+    constructor(scene, planet, center_ufo, cylinder, tab_node) {
         this.scene = scene;
         this.planet = planet;
-        this.ufo = ufo;
+        this.center_ufo = center_ufo;
         this.cylinder = cylinder;
+        this.tab_node = tab_node
     }
 
     update(dt) {
-        this.scene.traverse(node => {
-            // Move every node with defined velocity.
-            if (node === this.cylinder) {
-                /*vec3.scaleAndAdd(node.translation, node.translation, [1,1,1], dt);
-                node.updateTransformationMatrix();*/
-
-                // After moving, check for collision with every other node.
-                this.scene.traverse(other => {
-                    if (node !== other && other !== this.planet && other !== this.ufo) {
-                        this.resolveCollision(node, other);
-                    }
-                });
-            }
-        });
+            // After moving, check for collision with every other node.
+            this.scene.traverse(other => {
+                if (other !== this.planet && !this.tab_node.includes(other)) {
+                    this.resolveCollision(this.center_ufo, other);
+                }
+            });
+            this.scene.traverse(other => {
+                if (other !== this.planet && !this.tab_node.includes(other)) {
+                    this.setPickable(this.cylinder, other);
+                }
+            });
     }
 
     intervalIntersection(min1, max1, min2, max2) {
@@ -71,10 +69,10 @@ export class Physics {
         if (!isColliding) {
             return;
         }
-        console.log("colide");
+        console.log("colide "+a.name+" "+b.name);
 
         // Move node A minimally to avoid collision.
-        /*const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
+        const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
         const diffb = vec3.sub(vec3.create(), aBox.max, bBox.min);
 
         let minDiff = Infinity;
@@ -104,7 +102,23 @@ export class Physics {
             minDirection = [0, 0, -minDiff];
         }
 
-        a.translation = vec3.add(a.translation, a.translation, minDirection);*/
+        a.translation = vec3.add(a.translation, a.translation, minDirection);
+    }
+
+    setPickable(a,b){
+        // Get global space AABBs.
+        const aBox = this.getTransformedAABB(a);
+        const bBox = this.getTransformedAABB(b);
+        
+        // Check if there is collision.
+        const isColliding = this.aabbIntersection(aBox, bBox);
+        if (!isColliding) {
+            if(b.pickable)
+                b.pickable(false);
+            return;
+        }
+        console.log("colide "+a.name+" "+b.name+" is pickable "+b.pickable);
+        b.pickable(true);
     }
 
 }
