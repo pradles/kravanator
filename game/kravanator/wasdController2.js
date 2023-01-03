@@ -34,10 +34,14 @@ export class wasdController{
         this.maxSpeed = 3;
         this.i=0;
         this.j=0;
+        this.leftRight=0;
+
+        this.matM = mat4.create();
+        this.n = [0,0,1];
+        this.t = [1,0,0];
         // Decay as 1 - log percent max speed loss per second.
         this.decay = 0.9;
-        this.trenuta = node.globalMatrix;
-        console.log(this.trenuta);
+    
 
         // Pointer sensitivity in radians per pixel.
         this.pointerSensitivity = 0.002;
@@ -72,6 +76,9 @@ export class wasdController{
         const y = this.node.globalMatrix[13];
         const z = this.node.globalMatrix[14];
 
+        this.trenuta = this.node.globalMatrix;
+        //console.log(this.trenuta);
+
         //let q = quat.setAxisAngle([], [0, 1, 0], this.yaw);
         //mat4.fromQuat(this.node.globalMatrix, q);
         
@@ -83,7 +90,9 @@ export class wasdController{
         //const forward = vec3.transformQuat([], [1, 0, 0], quat);
         const forward = [-sin, 0, -cos];
         const right = [cos, 0, -sin];
-        const v = vec3.create()
+        let v = vec3.create()
+        let b = vec3.cross(vec3.create(),this.n,this.t);
+        //console.log(b);
 
         // Map user input to the acceleration vector.
 
@@ -94,9 +103,23 @@ export class wasdController{
         let rot = quat.create();
         const acc = vec3.create();
         let nek = vec3.create();
+        
+        //console.log(mat4.create());
         if (this.keys['KeyW']) {
-            idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
-            this.i+=0.01;
+            let q = quat.setAxisAngle(quat.create(), b, dt);
+            vec3.transformQuat(this.n,this.n,q);
+            vec3.transformQuat(this.t,this.t,q);
+            
+            /*matM = [
+                b[0],this.n[0],this.t[0],0,
+                b[1],this.n[1],this.n[1],0,
+                b[2],this.n[2],this.t[2],0,
+                0,0,0,1
+                   ];*/
+            //console.log(matM);
+            
+            //idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
+            //this.i+=0.01;
 
             /*let q = quat.create();
             quat.rotateY(q, q, dt * this.acceleration);
@@ -107,26 +130,39 @@ export class wasdController{
             //vec3.sub(acc, acc, forward);
         }
         if (this.keys['KeyS']) {
-            idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
-            this.i-=0.01;
+            let q = quat.setAxisAngle(quat.create(), b, -dt);
+            vec3.transformQuat(this.n,this.n,q);
+            vec3.transformQuat(this.t,this.t,q);
+            
+            
+            //idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
+            //this.i-=0.01;
             //quat.rotateZ(rot, rot, -this.yaw);
             //vec3.add(acc, acc, forward);
         }
         if (this.keys['KeyD']) {
-            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
-            this.j+=0.01;
+            let q = quat.setAxisAngle(quat.create(), this.t, dt);
+            vec3.transformQuat(this.n,this.n,q);
+            vec3.transformQuat(this.t,this.t,q);
+            
+            //idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
+            //this.j+=0.01;
             //quat.rotateX(rot, rot, this.yaw);
             //vec3.sub(acc, acc, right);
         }
         if (this.keys['KeyA']) {
-            idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
-            this.j-=0.01;
+            let q = quat.setAxisAngle(quat.create(), this.t, -dt);
+            vec3.transformQuat(this.n,this.n,q);
+            vec3.transformQuat(this.t,this.t,q);
+            
+            //idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
+            //this.j-=0.01;
             //quat.rotateX(rot, rot, -this.yaw);
             //vec3.add(acc, acc, right);
         }
 
         // Update velocity based on acceleration (first line of Euler's method).
-        vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
+        //vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
 
         // If there is no user input, apply decay.
         if (!this.keys['KeyW'] &&
@@ -149,14 +185,24 @@ export class wasdController{
             this.node.translation, this.velocity, dt);
 
         // Update rotation based on the Euler angles.
-        const rotation = quat.create();
+        /*const rotation = quat.create();
         quat.rotateY(rotation, rotation, this.yaw);
         quat.rotateX(rotation, rotation, 0);
-        this.node.rotation = rotation;
+        this.node.rotation = rotation;*/
+
 
         this.node.velocitySet(this.velocity);
         //this.node.rotation = quat.multiply(quat.create(), rot, this.node.rotation);
-        this.node.rotation = idle;
+        //this.node.rotation = idle;
+        //console.log(mat4.getRotation(quat.create(),matM));
+        this.matM = [
+            b[0],b[1],b[2],0,
+            this.n[0],this.n[1],this.n[2],0,
+            this.t[0],this.t[1],this.t[2],0,
+            0,0,0,1
+               ];            
+        this.node.rotation = mat4.getRotation(quat.create(),this.matM);
+        //this.node.translation = vec3.multiply(vec3.create(),xyz,[0,1,0])
     }
 
     pointermoveHandler(e) {
@@ -166,25 +212,30 @@ export class wasdController{
 
         // Horizontal pointer movement causes camera panning (y-rotation),
         // vertical pointer movement causes camera tilting (x-rotation).
-        const dx = e.movementX;
-        const dy = e.movementY;
-        this.pitch -= dy * this.pointerSensitivity;
-        this.yaw   -= dx * this.pointerSensitivity;
+        const dx = e.movementX * this.pointerSensitivity;
 
-        const pi = Math.PI;
+        //const dy = e.movementY;
+        //this.pitch -= dy * this.pointerSensitivity;
+
+        let q = quat.setAxisAngle(quat.create(), this.n, -dx);
+            vec3.transformQuat(this.n,this.n,q);
+            vec3.transformQuat(this.t,this.t,q);
+
+        /*const pi = Math.PI;
         const twopi = pi * 2;
-        const halfpi = pi / 2;
+        const halfpi = pi / 2;*/
 
         // Limit pitch so that the camera does not invert on itself.
-        if (this.pitch > halfpi) {
+        /*if (this.pitch > halfpi) {
             this.pitch = halfpi;
         }
         if (this.pitch < -halfpi) {
             this.pitch = -halfpi;
-        }
+        }*/
 
         // Constrain yaw to the range [0, pi * 2]
-        this.yaw = ((this.yaw % twopi) + twopi) % twopi;
+        //this.yaw = ((this.yaw % twopi) + twopi) % twopi;
+        this.leftRight = dx;
     }
 
     keydownHandler(e) {

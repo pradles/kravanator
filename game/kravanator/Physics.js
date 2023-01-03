@@ -1,23 +1,25 @@
 import { vec3, mat4 } from '../lib/gl-matrix-module.js';
 
+
 export class Physics {
 
-    constructor(scene, planet) {
+    constructor(scene, planet, ufo, cylinder) {
         this.scene = scene;
         this.planet = planet;
+        this.ufo = ufo;
+        this.cylinder = cylinder;
     }
 
     update(dt) {
         this.scene.traverse(node => {
             // Move every node with defined velocity.
-            if (node.velocity) {
-
-                vec3.scaleAndAdd(node.translation, node.translation, node.velocity, dt);
-                node.updateTransformationMatrix();
+            if (node === this.cylinder) {
+                /*vec3.scaleAndAdd(node.translation, node.translation, [1,1,1], dt);
+                node.updateTransformationMatrix();*/
 
                 // After moving, check for collision with every other node.
                 this.scene.traverse(other => {
-                    if (node !== other && other !== this.planet) {
+                    if (node !== other && other !== this.planet && other !== this.ufo) {
                         this.resolveCollision(node, other);
                     }
                 });
@@ -72,7 +74,7 @@ export class Physics {
         console.log("colide");
 
         // Move node A minimally to avoid collision.
-        const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
+        /*const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
         const diffb = vec3.sub(vec3.create(), aBox.max, bBox.min);
 
         let minDiff = Infinity;
@@ -102,7 +104,7 @@ export class Physics {
             minDirection = [0, 0, -minDiff];
         }
 
-        a.translation = vec3.add(a.translation, a.translation, minDirection);
+        a.translation = vec3.add(a.translation, a.translation, minDirection);*/
     }
 
 }

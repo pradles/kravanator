@@ -18,7 +18,8 @@ class App extends Application {
         this.center_ufo = await this.loader.loadNode('Center_UFO');
         this.center = await this.loader.loadNode('Center');
         this.planet = await this.loader.loadNode('Icosphere.001');
-        this.cilinder = await this.loader.loadNode('Cylinder.001');
+        this.ufo = await this.loader.loadNode('UFO');
+        this.cylinder = await this.loader.loadNode('Cylinder.001');
             
 
         if (!this.scene || !this.camera) {
@@ -32,7 +33,7 @@ class App extends Application {
         this.controller = new wasdController(this.center, this.canvas);
         this.controller2 = new mouseController(this.center_ufo, this.canvas);
         //this.controller3 = new cameraController(this.camera, this.canvas);
-        this.physics = new Physics(this.scene, this.planet);
+        this.physics = new Physics(this.scene, this.planet, this.ufo, this.cylinder);
 
         this.time = performance.now();
         this.startTime = this.time;

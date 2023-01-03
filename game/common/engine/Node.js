@@ -21,7 +21,7 @@ export class Node {
             }
         : {
             min: [-0.2, -0.2, -0.2],
-            max: [0.2, 0.2, 0.2],
+            max: [0.2, 0.2, 0.2],            
         };
 
 
@@ -165,6 +165,7 @@ export class Node {
             after(this);
         }
     }
+    
 
 }
 Node.defaults = {
