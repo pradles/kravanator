@@ -1,28 +1,31 @@
 import { vec3, mat4 } from '../lib/gl-matrix-module.js';
+import { Player } from '../common/engine/player.js';
 
 
-export class Physics {
+export class Physics extends Player{
 
     constructor(scene, planet, center_ufo, cylinder, tab_node) {
+        super(Player)
         this.scene = scene;
         this.planet = planet;
         this.center_ufo = center_ufo;
         this.cylinder = cylinder;
-        this.tab_node = tab_node
+        this.tab_node = tab_node;
+        this.pickable;
+        this.player = new Player();
     }
 
     update(dt) {
+        this.pickable = [];
             // After moving, check for collision with every other node.
-            this.scene.traverse(other => {
-                if (other !== this.planet && !this.tab_node.includes(other)) {
-                    this.resolveCollision(this.center_ufo, other);
-                }
-            });
-            this.scene.traverse(other => {
-                if (other !== this.planet && !this.tab_node.includes(other)) {
+        this.scene.traverse(other => {
+            if (other !== this.planet && !this.tab_node.includes(other)) {
+                this.resolveCollision(this.center_ufo, other);
+                if(other.value <= this.player.lvl) //tle namest 2 damo "level" ki ga ma ns ufo
                     this.setPickable(this.cylinder, other);
-                }
-            });
+            }
+        });
+        return this.pickable;
     }
 
     intervalIntersection(min1, max1, min2, max2) {
@@ -69,7 +72,11 @@ export class Physics {
         if (!isColliding) {
             return;
         }
-        console.log("colide "+a.name+" "+b.name);
+        if(b.value != 0){ // tle lohk sam nrdimo da nm predmet ku je namenjen da se pobere izgine.
+            this.player.addPoints = b.value;
+            this.planet.removeChild(b);
+        }
+        //console.log("colide "+a.name+" "+b.name);
 
         // Move node A minimally to avoid collision.
         const diffa = vec3.sub(vec3.create(), bBox.max, aBox.min);
@@ -113,12 +120,11 @@ export class Physics {
         // Check if there is collision.
         const isColliding = this.aabbIntersection(aBox, bBox);
         if (!isColliding) {
-            if(b.pickable)
-                b.pickable(false);
             return;
         }
-        console.log("colide "+a.name+" "+b.name+" is pickable "+b.pickable);
-        b.pickable(true);
+        
+        //console.log("colide "+a.name+" "+b.name+" is pickable "+b.pickable);
+        this.pickable.push(b);        
     }
 
 }

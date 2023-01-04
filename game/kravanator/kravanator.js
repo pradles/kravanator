@@ -21,6 +21,7 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cylinder.001');
         let tab_node = [];
+        this.pickable = [];
         this.center_ufo.traverse(node_ufo => {
             tab_node.push(node_ufo);
         });
@@ -51,10 +52,10 @@ class App extends Application {
         this.time = performance.now();
         const dt = (this.time - this.startTime) * 0.001;
         this.startTime = this.time;
+        this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
-        this.controller.update(dt);
+        this.controller.update(dt,this.pickable);
         //this.controller3.update(dt);
-        this.physics.update(dt);
     }
 
     render() {

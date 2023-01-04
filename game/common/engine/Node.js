@@ -44,8 +44,8 @@ export class Node {
             child.parent = this;
         }
         this.parent = null;
-
-        this.pickable = false;
+        
+        this.value = 1;
     }
 
     updateTransformationComponents() {
@@ -131,10 +131,6 @@ export class Node {
         } else {
             return this.localMatrix;
         }
-    }
-
-    set pickable(x){
-        this.pickable = x;
     }
 
     velocitySet(v) {
