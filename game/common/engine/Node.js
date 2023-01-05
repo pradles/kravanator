@@ -48,6 +48,18 @@ export class Node {
         this.value = 1;
     }
 
+    cloneNode() {
+        return new Node({
+            translation: this.translation,
+            rotation: this.rotation,
+            scale: this.scale,
+            mesh: this.mesh,
+            camera: this.camera,
+            children: this.children,
+            value: this.value
+        });
+    }
+
     updateTransformationComponents() {
         mat4.getRotation(this._rotation, this._matrix);
         mat4.getTranslation(this._translation, this._matrix);
