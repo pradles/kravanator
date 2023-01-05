@@ -56,7 +56,8 @@ export class Node {
             mesh: this.mesh,
             camera: this.camera,
             children: this.children,
-            value: this.value
+            value: this.value,
+            name: this.name
         });
     }
 

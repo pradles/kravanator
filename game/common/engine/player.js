@@ -6,6 +6,7 @@ export class Player{
     }
     set addPoints(points){
         this.points += points;
+        console.log(this.points)
         if(this.points >= this.need){
             console.log("LVL UP")
             this.lvl++;

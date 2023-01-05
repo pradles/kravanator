@@ -20,13 +20,32 @@ class App extends Application {
         this.planet = await this.loader.loadNode('Icosphere.001');
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cylinder.001');
+        this.cube = await this.loader.loadNode('Cube');
+        
 
-        this.pig = await this.loader.loadNode('pig');
-        this.pig.value = 2;
-        this.cow = await this.loader.loadNode('cow');
-        this.cow.value = 3;
-        this.duck = await this.loader.loadNode('duck');
-        this.duck.value = 1;
+        this.arr_zivali = [];
+        for(var i=0;i<20;i++){
+            this.cow = await this.loader.loadNode('cow');
+            this.cow.value = 3;
+            this.arr_zivali.push(this.cow);
+        }
+        for(var i=0;i<20;i++){
+            this.pig = await this.loader.loadNode('pig');
+            this.pig.value = 2;
+            this.arr_zivali.push(this.pig);
+        }
+        for(var i=0;i<20;i++){
+            this.duck = await this.loader.loadNode('duck');
+            this.duck.value = 1;
+            this.arr_zivali.push(this.duck);
+        }
+        this.arr_zivali.forEach(element => {
+            console.log(element)
+        });
+
+
+
+
 
         this.pickable = [];
         let tab_node = []
@@ -34,10 +53,11 @@ class App extends Application {
             tab_node.push(node_ufo);
         }); 
 
-        this.arr_zivali = [];
+
+        //this.arr_zivali = [];
         let positions = [];
         let radius = 42;
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 60; i++) {
             const angle1 = Math.random() * 2 * Math.PI;
             const angle2 = Math.random() * Math.PI;
             const x = radius * Math.sin(angle2) * Math.cos(angle1);
@@ -45,11 +65,12 @@ class App extends Application {
             const z = radius * Math.cos(angle2);
 
             positions.push([x, y, z]);
-            this.arr_zivali.push(this.pig.cloneNode());
+            //this.arr_zivali.push(this.pig.cloneNode());
         }
         this.arr_zivali.forEach(function (element, i) {
+            console.log(element);
             element.translation = positions[i];
-            //this.scene.addNode(element);
+            this.scene.addNode(element);
         }.bind(this));
             
           
