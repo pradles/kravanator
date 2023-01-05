@@ -2,12 +2,13 @@ import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 export class wasdController{
 
-    constructor(node, domElement) {
+    constructor(node, domElement, arr_zivali) {
 
         // The node that this controller controls.
         this.node = node;
         // The activation DOM element.
         this.domElement = domElement;
+        this.arr_zivali = arr_zivali;
 
         // This map is going to hold the pressed state for every key.
         this.keys = {};
@@ -160,42 +161,40 @@ export class wasdController{
             //quat.rotateX(rot, rot, -this.yaw);
             //vec3.add(acc, acc, right);
         }
+        const up = this.n;
         if(pickable.length > 0){
             console.log(vec3.distance(this.node.translation, pickable[0].translation));
-            const up = this.t;
             const acc = vec3.create();
-            const acc2 = vec3.create();
             
             if (this.keys['Space']) {
                 vec3.add(acc, acc, up); 
                 vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
-            const speed = vec3.length(this.velocity);
-            if (speed > this.maxSpeed) {
-                vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
-            }
-            pickable.forEach(element => {
-                element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity, dt);
-            }); 
-            }
-            if (!this.keys['Space']){
-                const distance = vec3.distance(this.node.translation, pickable[0].translation);
-                if(distance >= 41.16){
-                    vec3.sub(acc2, acc2, up);
-                 
-                    vec3.scaleAndAdd(this.velocity2, this.velocity2, acc2, dt * this.acceleration);
-            const speed = vec3.length(this.velocity2);
-            if (speed > this.maxSpeed) {
-                vec3.scale(this.velocity2, this.velocity2, this.maxSpeed / speed);
-            }
-            pickable.forEach(element => {
-                element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity2, dt);
-            }); 
-
+                const speed = vec3.length(this.velocity);
+                if (speed > this.maxSpeed) {
+                    vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
                 }
+                pickable.forEach(element => {
+                    element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity, dt);
+                }); 
             }
-
             
         }
+        /*if (!this.keys['Space']){
+            const acc2 = vec3.create();
+            this.arr_zivali.forEach(element => {
+            const distance = vec3.distance(this.node.translation, element.translation);
+            if(distance >= 41.16){
+                vec3.sub(acc2, acc2, up);
+                vec3.scaleAndAdd(this.velocity2, this.velocity2, acc2, dt * this.acceleration);
+                const speed = vec3.length(this.velocity2);
+                if (speed > this.maxSpeed) {
+                    vec3.scale(this.velocity2, this.velocity2, this.maxSpeed / speed);
+                }}
+                
+                    element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity2, dt);
+                }); 
+            
+        }*/
 
         // Update velocity based on acceleration (first line of Euler's method).
         //vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);

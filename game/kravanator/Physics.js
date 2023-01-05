@@ -74,6 +74,7 @@ export class Physics extends Player{
         }
         if(b.value != 0){ // tle lohk sam nrdimo da nm predmet ku je namenjen da se pobere izgine.
             this.player.addPoints = b.value;
+            //removeNode(b);
             this.planet.removeChild(b);
         }
         //console.log("colide "+a.name+" "+b.name);
