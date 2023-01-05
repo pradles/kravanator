@@ -72,7 +72,7 @@ export class wasdController{
         });
     }
 
-    update(dt, pickable) {
+    update(dt, pickable, arr_zivali) {
         const xyz = [this.node.globalMatrix[12],this.node.globalMatrix[13],this.node.globalMatrix[14]];
         const x = this.node.globalMatrix[12];
         const y = this.node.globalMatrix[13];
@@ -180,9 +180,9 @@ export class wasdController{
             }
             
         }
-        /*if (!this.keys['Space']){
+        if (!this.keys['Space']){
             const acc2 = vec3.create();
-            this.arr_zivali.forEach(element => {
+            arr_zivali.forEach(element => {
             const distance = vec3.distance(this.node.translation, element.translation);
             if(distance >= 41.16){
                 vec3.sub(acc2, acc2, up);
@@ -195,7 +195,7 @@ export class wasdController{
                     element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity2, dt);
                 }); 
             
-        }*/
+        }
 
         // Update velocity based on acceleration (first line of Euler's method).
         //vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);

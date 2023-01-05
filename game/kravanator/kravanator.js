@@ -1,4 +1,6 @@
 import { Application } from '../common/engine/Application.js';
+import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
+
 
 import { GLTFLoader } from './GLTFLoader.js';
 import { Renderer } from './Renderer.js';
@@ -20,32 +22,15 @@ class App extends Application {
         this.planet = await this.loader.loadNode('Icosphere.001');
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cylinder.001');
-        this.cube = await this.loader.loadNode('Cube');
+        this.cube = await this.loader.loadNode('Cube.002');
         
 
-        this.arr_zivali = [];
-        for(var i=0;i<20;i++){
-            this.cow = await this.loader.loadNode('cow');
-            this.cow.value = 3;
-            this.arr_zivali.push(this.cow);
-        }
-        for(var i=0;i<20;i++){
-            this.pig = await this.loader.loadNode('pig');
-            this.pig.value = 2;
-            this.arr_zivali.push(this.pig);
-        }
-        for(var i=0;i<20;i++){
-            this.duck = await this.loader.loadNode('duck');
-            this.duck.value = 1;
-            this.arr_zivali.push(this.duck);
-        }
-        this.arr_zivali.forEach(element => {
-            console.log(element)
-        });
-
-
-
-
+        this.pig = await this.loader.loadNode('pig');
+        this.pig.value = 2;
+        this.cow = await this.loader.loadNode('cow');
+        this.cow.value = 3;
+        this.duck = await this.loader.loadNode('duck');
+        this.duck.value = 1;
 
         this.pickable = [];
         let tab_node = []
@@ -54,27 +39,51 @@ class App extends Application {
         }); 
 
 
-        //this.arr_zivali = [];
+        this.arr_zivali = [];
         let positions = [];
-        let radius = 42;
-        for (let i = 0; i < 60; i++) {
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.random() * Math.PI;
-            const x = radius * Math.sin(angle2) * Math.cos(angle1);
-            const y = radius * Math.sin(angle2) * Math.sin(angle1);
-            const z = radius * Math.cos(angle2);
+        let radius = 1
 
+        for (let i = 0; i < 300; i++) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
+          
             positions.push([x, y, z]);
-            //this.arr_zivali.push(this.pig.cloneNode());
+          }
+
+        for(var i=0;i<150;i++){
+            this.arr_zivali.push(this.duck.cloneNode());
         }
+        for(var i=0;i<90;i++){
+            this.arr_zivali.push(this.pig.cloneNode());
+        }
+        for(var i=0;i<60;i++){
+            this.arr_zivali.push(this.cow.cloneNode());
+        }
+
         this.arr_zivali.forEach(function (element, i) {
-            console.log(element);
+            let sredina = this.center.translation;
+            let pozicija = element.translation;
+            let direkcija = vec3.create();
+
+            vec3.sub(direkcija,sredina,pozicija);
+            vec3.normalize(direkcija,direkcija);
+
+            this.planet.addChild(element);
             element.translation = positions[i];
+
+            const rotation = quat.create();
+            quat.rotationTo(rotation, direkcija, sredina /*<--tle?*/);
+
+            element.rotation = rotation;
             this.scene.addNode(element);
         }.bind(this));
             
           
-
         if (!this.scene || !this.camera) {
             throw new Error('Scene or Camera not present in glTF');
         }
@@ -102,7 +111,7 @@ class App extends Application {
         this.startTime = this.time;
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
-        this.controller.update(dt,this.pickable);
+        this.controller.update(dt,this.pickable, this.arr_zivali);
         //this.controller3.update(dt);
     }
 

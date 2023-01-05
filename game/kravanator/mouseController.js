@@ -57,7 +57,7 @@ export class mouseController {
                 if(this.currentLimit<=this.limitUp){
                     this.key = false;
                     this.move = true;
-                    console.log("down")
+                    //console.log("down")
                     this.currentLimit++;
                 }
             }
@@ -65,7 +65,7 @@ export class mouseController {
                 if(this.currentLimit>=this.limitDown){
                     this.key = true;
                     this.move = true;
-                    console.log("up")
+                    //console.log("up")
                     this.currentLimit--;
                 }
             }
