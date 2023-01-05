@@ -162,20 +162,20 @@ export class wasdController{
         }
         if(pickable.length > 0){
             console.log(vec3.distance(this.node.translation, pickable[0].translation));
-            const up = this.t;
+            const up = this.n;
             const acc = vec3.create();
             const acc2 = vec3.create();
             
             if (this.keys['Space']) {
                 vec3.add(acc, acc, up); 
                 vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
-            const speed = vec3.length(this.velocity);
-            if (speed > this.maxSpeed) {
-                vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
-            }
-            pickable.forEach(element => {
-                element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity, dt);
-            }); 
+                const speed = vec3.length(this.velocity);
+                if (speed > this.maxSpeed) {
+                    vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
+                }
+                pickable.forEach(element => {
+                    element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity, dt);
+                }); 
             }
             if (!this.keys['Space']){
                 const distance = vec3.distance(this.node.translation, pickable[0].translation);
