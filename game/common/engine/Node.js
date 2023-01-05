@@ -45,7 +45,7 @@ export class Node {
         }
         this.parent = null;
         
-        this.value = 1;
+        this.value = 0;
     }
 
     cloneNode() {

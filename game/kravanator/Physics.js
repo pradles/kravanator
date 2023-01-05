@@ -21,7 +21,7 @@ export class Physics extends Player{
         this.scene.traverse(other => {
             if (other !== this.planet && !this.tab_node.includes(other)) {
                 this.resolveCollision(this.center_ufo, other);
-                if(other.value <= this.player.lvl) //tle namest 2 damo "level" ki ga ma ns ufo
+                if(other.value <= this.player.lvl && other.value !== 0) //tle namest 2 damo "level" ki ga ma ns ufo
                     this.setPickable(this.cylinder, other);
             }
         });

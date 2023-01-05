@@ -21,27 +21,36 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cylinder.001');
 
-        this.arr_zivali = [];
+        this.pig = await this.loader.loadNode('pig');
+        this.pig.value = 2;
+        this.cow = await this.loader.loadNode('cow');
+        this.cow.value = 3;
+        this.duck = await this.loader.loadNode('duck');
+        this.duck.value = 1;
+
         this.pickable = [];
         let tab_node = []
         this.center_ufo.traverse(node_ufo => {
             tab_node.push(node_ufo);
         }); 
 
-        this.positions = [];
-        let radius = 41.16;
-        for (let i = 0; i < 100; i++) {
+        this.arr_zivali = [];
+        let positions = [];
+        let radius = 42;
+        for (let i = 0; i < 20; i++) {
             const angle1 = Math.random() * 2 * Math.PI;
             const angle2 = Math.random() * Math.PI;
             const x = radius * Math.sin(angle2) * Math.cos(angle1);
             const y = radius * Math.sin(angle2) * Math.sin(angle1);
             const z = radius * Math.cos(angle2);
-        
-            this.positions.push([x, y, z]);
+
+            positions.push([x, y, z]);
+            this.arr_zivali.push(this.pig.cloneNode());
         }
-        this.positions.forEach(element => {
-            console.log(element);
-        });
+        this.arr_zivali.forEach(function (element, i) {
+            element.translation = positions[i];
+            //this.scene.addNode(element);
+        }.bind(this));
             
           
 
