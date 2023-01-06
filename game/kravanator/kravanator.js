@@ -22,6 +22,7 @@ class App extends Application {
         this.planet = await this.loader.loadNode('Icosphere.001');
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cone');
+        this.hose = await this.loader.loadNode('hose');
         
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
@@ -35,7 +36,6 @@ class App extends Application {
         this.center_ufo.traverse(node_ufo => {
             tab_node.push(node_ufo);
         }); 
-
 
         this.arr_zivali = [];
         let positions = [];
@@ -62,6 +62,7 @@ class App extends Application {
         for(var i=0;i<60;i++){
             this.arr_zivali.push(this.cow.cloneNode());
         }
+        
 
         this.arr_zivali.forEach(function (element, i) {
             let sredina = this.center.translation;
@@ -80,6 +81,46 @@ class App extends Application {
             element.rotation = rotation;
             this.scene.addNode(element);
         }.bind(this));
+        
+
+        this.arr_hose = [];
+        positions = [];
+        for(var i=0;i<50;i++){
+            this.arr_hose.push(this.hose.cloneNode());
+        }
+        for (let i = 0; i < 50; i++) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
+          
+            positions.push([x, y, z]);
+        }
+
+        this.arr_hose.forEach(function (element, i) {
+            let sredina = this.center.translation;
+            
+            this.planet.addChild(element);
+            element.translation = positions[i];
+
+            let pozicija = element.translation;
+            let direkcija = vec3.create();
+            vec3.sub(direkcija,sredina,pozicija);
+            vec3.normalize(direkcija,direkcija);
+
+            const rotation = quat.create();
+            quat.rotationTo(rotation, direkcija, [0,0,1] /*<--tle?*/);
+
+            element.rotation = rotation;
+            this.scene.addNode(element);
+        }.bind(this));
+
+
+
+
             
           
         if (!this.scene || !this.camera) {
