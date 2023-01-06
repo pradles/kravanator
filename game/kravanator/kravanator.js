@@ -23,6 +23,7 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cone');
         this.hose = await this.loader.loadNode('hose');
+        this.flashlight = await this.loader.loadNode('flashlight');
         
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
