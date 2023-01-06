@@ -4,12 +4,12 @@ import { Player } from '../common/engine/player.js';
 
 export class Physics extends Player{
 
-    constructor(scene, planet, center_ufo, cylinder, tab_node) {
+    constructor(scene, planet, center_ufo, cone, tab_node) {
         super(Player)
         this.scene = scene;
         this.planet = planet;
         this.center_ufo = center_ufo;
-        this.cylinder = cylinder;
+        this.cone = cone;
         this.tab_node = tab_node;
         this.pickable;
         this.player = new Player();
@@ -22,7 +22,7 @@ export class Physics extends Player{
             if (other !== this.planet && !this.tab_node.includes(other)) {
                 this.resolveCollision(this.center_ufo, other);
                 if(other.value <= this.player.lvl && other.value !== 0) //tle namest 2 damo "level" ki ga ma ns ufo
-                    this.setPickable(this.cylinder, other);
+                    this.setPickable(this.cone, other);
             }
         });
         return this.pickable;

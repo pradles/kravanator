@@ -21,10 +21,8 @@ class App extends Application {
         this.center = await this.loader.loadNode('Center');
         this.planet = await this.loader.loadNode('Icosphere.001');
         this.ufo = await this.loader.loadNode('UFO');
-        this.cylinder = await this.loader.loadNode('Cylinder.001');
-        this.cube = await this.loader.loadNode('Cube.002');
+        this.cylinder = await this.loader.loadNode('Cone');
         
-
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
         this.cow = await this.loader.loadNode('cow');
@@ -67,17 +65,17 @@ class App extends Application {
 
         this.arr_zivali.forEach(function (element, i) {
             let sredina = this.center.translation;
-            let pozicija = element.translation;
-            let direkcija = vec3.create();
-
-            vec3.sub(direkcija,sredina,pozicija);
-            vec3.normalize(direkcija,direkcija);
-
+            
             this.planet.addChild(element);
             element.translation = positions[i];
 
+            let pozicija = element.translation;
+            let direkcija = vec3.create();
+            vec3.sub(direkcija,sredina,pozicija);
+            vec3.normalize(direkcija,direkcija);
+
             const rotation = quat.create();
-            quat.rotationTo(rotation, direkcija, sredina /*<--tle?*/);
+            quat.rotationTo(rotation, direkcija, [0,0,1] /*<--tle?*/);
 
             element.rotation = rotation;
             this.scene.addNode(element);

@@ -46,6 +46,7 @@ export class Node {
         this.parent = null;
         
         this.value = options.value || 0;
+        this.transparency = options.value || 0;
     }
 
     cloneNode() {
