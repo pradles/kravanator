@@ -65,3 +65,22 @@ a.back:hover {
     0% { transform: rotate(0deg); }
   100% { transform: rotate(1800deg); }
 }
+
+.info {
+    position: fixed;
+    top: 1vh;
+    right: 1vw;
+    line-height: 3vh;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.innerInfo {
+    display: flex;
+    font-family: "Courier New", Courier, monospace;
+    font-size: larger;
+}
+
+#score,
+#level {
+    font-weight: bold;
+}

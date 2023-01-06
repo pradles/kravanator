@@ -163,7 +163,7 @@ export class wasdController{
         }
         const up = this.n;
         if(pickable.length > 0){
-            console.log(vec3.distance(this.node.translation, pickable[0].translation));
+            //console.log(vec3.distance(this.node.translation, pickable[0].translation));
            
             const acc = vec3.create();
             

@@ -39,90 +39,98 @@ class App extends Application {
         }); 
 
         this.arr_zivali = [];
-        let positions = [];
         let radius = 1
 
-        for (let i = 0; i < 300; i++) {
-            const u = Math.random();
-            const v = Math.random();
-            const theta = 2 * Math.PI * u;
-            const phi = Math.acos(2 * v - 1);
-            const x = radius * Math.sin(phi) * Math.cos(theta);
-            const y = radius * Math.sin(phi) * Math.sin(theta);
-            const z = radius * Math.cos(phi);
-          
-            positions.push([x, y, z]);
-          }
+        for (let i = 0; i < 120; i++) {
+            const angle1 = Math.random() * 2 * Math.PI;
+            const angle2 = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(angle1) * Math.cos(angle2);
+            const y = radius * Math.sin(angle1) * Math.sin(angle2);
+            const z = radius * Math.cos(angle1);
 
-        for(var i=0;i<150;i++){
-            this.arr_zivali.push(this.duck.cloneNode());
-        }
-        for(var i=0;i<90;i++){
-            this.arr_zivali.push(this.pig.cloneNode());
-        }
-        for(var i=0;i<60;i++){
-            this.arr_zivali.push(this.cow.cloneNode());
-        }
-        
 
-        this.arr_zivali.forEach(function (element, i) {
-            let sredina = this.center.translation;
+            const temp = this.duck.cloneNode();
+            const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            temp.translation = [x, y, z];
+            const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             
-            this.planet.addChild(element);
-            element.translation = positions[i];
+            const angle = vec3.angle(prej, potem);
+            const axis = vec3.cross(vec3.create(), prej, potem);
+            temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, -90));
 
-            let pozicija = element.translation;
-            let direkcija = vec3.create();
-            vec3.sub(direkcija,sredina,pozicija);
-            vec3.normalize(direkcija,direkcija);
+            //temp.rotation = quat.mul(quat.create(), quat.mul(quat.create(), rot, temp.rotation), quat.invert(quat.create(), rot));
 
-            const rotation = quat.create();
-            quat.rotationTo(rotation, direkcija, [0,0,1] /*<--tle?*/);
+            this.arr_zivali.push(temp)
+            this.planet.addChild(temp)
+            // this.scene.addNode(temp)
+        }
+        for (let i = 0; i < 90; i++) {
+            const angle1 = Math.random() * 2 * Math.PI;
+            const angle2 = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(angle1) * Math.cos(angle2);
+            const y = radius * Math.sin(angle1) * Math.sin(angle2);
+            const z = radius * Math.cos(angle1);
+            
+            const temp = this.pig.cloneNode();
+            const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            temp.translation = [x, y, z];
+            const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            
+            const angle = vec3.angle(prej, potem);
+            const axis = vec3.cross(vec3.create(), prej, potem);
+            temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), -90, 0, 0));
 
-            element.rotation = rotation;
-            this.scene.addNode(element);
-        }.bind(this));
-        
+            
+            this.arr_zivali.push(temp)
+            this.planet.addChild(temp)
+            // this.scene.addNode(temp)
+        }
+        for (let i = 0; i < 60; i++) {
+            const angle1 = Math.random() * 2 * Math.PI;
+            const angle2 = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(angle1) * Math.cos(angle2);
+            const y = radius * Math.sin(angle1) * Math.sin(angle2);
+            const z = radius * Math.cos(angle1);
+
+            const temp = this.cow.cloneNode();
+            const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            temp.translation = [x, y, z];
+            const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            
+            const angle = vec3.angle(prej, potem);
+            const axis = vec3.cross(vec3.create(), prej, potem);
+            temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
+
+            
+            this.arr_zivali.push(temp)
+            this.planet.addChild(temp)
+            // this.scene.addNode(temp)
+        }
+
 
         this.arr_hose = [];
-        positions = [];
-        for(var i=0;i<50;i++){
-            this.arr_hose.push(this.hose.cloneNode());
-        }
-        for (let i = 0; i < 50; i++) {
-            const u = Math.random();
-            const v = Math.random();
-            const theta = 2 * Math.PI * u;
-            const phi = Math.acos(2 * v - 1);
-            const x = radius * Math.sin(phi) * Math.cos(theta);
-            const y = radius * Math.sin(phi) * Math.sin(theta);
-            const z = radius * Math.cos(phi);
-          
-            positions.push([x, y, z]);
-        }
+        for (let i = 0; i < 20; i++) {
+            const angle1 = Math.random() * 2 * Math.PI;
+            const angle2 = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(angle1) * Math.cos(angle2);
+            const y = radius * Math.sin(angle1) * Math.sin(angle2);
+            const z = radius * Math.cos(angle1);
 
-        this.arr_hose.forEach(function (element, i) {
-            let sredina = this.center.translation;
+            const temp = this.hose.cloneNode();
+            const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
+            temp.translation = [x, y, z];
+            const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             
-            this.planet.addChild(element);
-            element.translation = positions[i];
-
-            let pozicija = element.translation;
-            let direkcija = vec3.create();
-            vec3.sub(direkcija,sredina,pozicija);
-            vec3.normalize(direkcija,direkcija);
-
-            const rotation = quat.create();
-            quat.rotationTo(rotation, direkcija, [0,0,1] /*<--tle?*/);
-
-            element.rotation = rotation;
-            this.scene.addNode(element);
-        }.bind(this));
-
-
-
+            const angle = vec3.angle(prej, potem);
+            const axis = vec3.cross(vec3.create(), prej, potem);
+            temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
 
             
+            this.arr_hose.push(temp)
+            this.planet.addChild(temp)
+            // this.scene.addNode(temp)
+        }
+           
           
         if (!this.scene || !this.camera) {
             throw new Error('Scene or Camera not present in glTF');
@@ -136,6 +144,10 @@ class App extends Application {
         this.controller2 = new mouseController(this.center_ufo, this.canvas, this.arr_zivali);
         //this.controller3 = new cameraController(this.camera, this.canvas);
         this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node);
+
+
+        document.getElementById('score').innerHTML = this.physics.player.points.toString();
+        document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
 
         this.time = performance.now();
         this.startTime = this.time;
@@ -152,6 +164,8 @@ class App extends Application {
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
         this.controller.update(dt,this.pickable, this.arr_zivali);
+        document.getElementById('score').innerHTML = this.physics.player.points.toString();
+        document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
         //this.controller3.update(dt);
     }
 

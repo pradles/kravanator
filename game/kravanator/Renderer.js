@@ -42,8 +42,8 @@ export class Renderer {
             bufferView.byteOffset,
             bufferView.byteLength);
         const glBuffer = WebGL.createBuffer(this.gl, {
-            target : bufferView.target,
-            data   : buffer
+            target: bufferView.target,
+            data: buffer
         });
         this.glObjects.set(bufferView, glBuffer);
         return glBuffer;
@@ -126,12 +126,12 @@ export class Renderer {
 
         // this is an application-scoped convention, matching the shader
         const attributeNameToIndexMap = {
-            POSITION   : 0,
-            NORMAL     : 1,
-            TANGENT    : 2,
-            TEXCOORD_0 : 3,
-            TEXCOORD_1 : 4,
-            COLOR_0    : 5,
+            POSITION: 0,
+            NORMAL: 1,
+            TANGENT: 2,
+            TEXCOORD_0: 3,
+            TEXCOORD_1: 4,
+            COLOR_0: 5,
         };
 
         for (const name in primitive.attributes) {
@@ -196,7 +196,12 @@ export class Renderer {
 
         const mvpMatrix = this.getViewProjectionMatrix(camera);
         for (const node of scene.nodes) {
-            this.renderNode(node, mvpMatrix);
+            if (!(node.name === 'Cone' || node.name === 'flashlight'))
+                this.renderNode(node, mvpMatrix);
+        }
+        for (const node of scene.nodes) {
+            if (node.name === 'Cone' || node.name === 'flashlight')
+                this.renderNode(node, mvpMatrix);
         }
     }
 
@@ -210,9 +215,9 @@ export class Renderer {
 
         if (node.mesh) {
             gl.disable(gl.BLEND);
-            if(node.name === 'Cone' || node.name === 'flashlight'){
+            if (node.name === 'Cone' || node.name === 'flashlight') {
                 gl.enable(gl.BLEND);
-                gl.blendFuncSeparate(gl.SRC_COLOR, gl.DST_COLOR, gl.ONE, gl.ZERO);               
+                gl.blendFuncSeparate(gl.SRC_COLOR, gl.DST_COLOR, gl.ONE, gl.ZERO);
             }
             gl.uniformMatrix4fv(uniforms.uModelViewProjection, false, mvpMatrix);
             for (const primitive of node.mesh.primitives) {
@@ -241,11 +246,11 @@ export class Renderer {
 
         const texture = material.baseColorTexture;
         const glTexture = texture
-                        ? this.glObjects.get(texture.image)
-                        : this.defaultTexture;
+            ? this.glObjects.get(texture.image)
+            : this.defaultTexture;
         const glSampler = texture
-                        ? this.glObjects.get(texture.sampler)
-                        : this.defaultSampler;
+            ? this.glObjects.get(texture.sampler)
+            : this.defaultSampler;
 
         gl.bindTexture(gl.TEXTURE_2D, glTexture);
         gl.bindSampler(0, glSampler);
