@@ -180,22 +180,25 @@ export class wasdController{
             }
             
         }
-        if (!this.keys['Space']){
-            const acc2 = vec3.create();
+        
+        if (!this.keys['Space']) {
             arr_zivali.forEach(element => {
-            const distance = vec3.distance(this.node.translation, element.translation);
-            if(distance >= 41.16){
-                vec3.sub(acc2, acc2, up);
+              // Calculate the distance between the object's current position and its original position
+              const distance = vec3.distance(element.translation, element.originalPosition);
+              if (distance > 0.0025) {
+                // If the object is not at its original position, move it closer to it
+                const acc2 = vec3.create();
+                vec3.subtract(acc2, element.originalPosition, element.translation);
+                vec3.normalize(acc2, acc2);
                 vec3.scaleAndAdd(this.velocity2, this.velocity2, acc2, dt * this.acceleration);
                 const speed = vec3.length(this.velocity2);
                 if (speed > this.maxSpeed) {
-                    vec3.scale(this.velocity2, this.velocity2, this.maxSpeed / speed);
-                }}
-                
-                    element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity2, dt);
-                }); 
-            
-        }
+                  vec3.scale(this.velocity2, this.velocity2, this.maxSpeed / speed);
+                }
+                element.translation = vec3.scaleAndAdd(vec3.create(), element.translation, this.velocity2, dt);
+              }
+            });
+          }
 
         // Update velocity based on acceleration (first line of Euler's method).
         //vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);

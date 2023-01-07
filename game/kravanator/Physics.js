@@ -4,7 +4,7 @@ import { Player } from '../common/engine/player.js';
 
 export class Physics extends Player{
 
-    constructor(scene, planet, center_ufo, cone, tab_node) {
+    constructor(scene, planet, center_ufo, cone, tab_node, sky) {
         super(Player)
         this.scene = scene;
         this.planet = planet;
@@ -13,17 +13,23 @@ export class Physics extends Player{
         this.tab_node = tab_node;
         this.pickable;
         this.player = new Player();
+        this.sky = sky;
     }
 
     update(dt) {
         this.pickable = [];
             // After moving, check for collision with every other node.
         this.scene.traverse(other => {
-            if (other !== this.planet && !this.tab_node.includes(other)) {
+            
+            if (other !== this.planet && other !== this.sky && !this.tab_node.includes(other)) {
                 this.resolveCollision(this.center_ufo, other);
-                if(other.value <= this.player.lvl && other.value !== 0) //tle namest 2 damo "level" ki ga ma ns ufo
+                if(other.value <= this.player.lvl && other.value !== 0)
                     this.setPickable(this.cone, other);
             }
+            if(other.name === 'flashlight') {
+                this.checkOver(this.center_ufo, other);
+            }
+
         });
         return this.pickable;
     }
@@ -126,6 +132,19 @@ export class Physics extends Player{
         
         //console.log("colide "+a.name+" "+b.name+" is pickable "+b.pickable);
         this.pickable.push(b);        
+    }
+
+    checkOver(a,b){
+        const aBox = this.getTransformedAABB(a);
+        const bBox = this.getTransformedAABB(b);
+        
+        // Check if there is collision.
+        const isColliding = this.aabbIntersection(aBox, bBox);
+        if (!isColliding) {
+            return;
+        }
+        
+        console.log("GAME OVER");
     }
 
 }

@@ -24,6 +24,7 @@ class App extends Application {
         this.cylinder = await this.loader.loadNode('Cone');
         this.hose = await this.loader.loadNode('hose');
         this.flashlight = await this.loader.loadNode('flashlight');
+        this.sky = await this.loader.loadNode('Cube.002');
         
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
@@ -42,11 +43,13 @@ class App extends Application {
         let radius = 1
 
         for (let i = 0; i < 120; i++) {
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.acos(2 * Math.random() - 1);
-            const x = radius * Math.sin(angle1) * Math.cos(angle2);
-            const y = radius * Math.sin(angle1) * Math.sin(angle2);
-            const z = radius * Math.cos(angle1);
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
 
 
             const temp = this.duck.cloneNode();
@@ -65,11 +68,13 @@ class App extends Application {
             // this.scene.addNode(temp)
         }
         for (let i = 0; i < 90; i++) {
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.acos(2 * Math.random() - 1);
-            const x = radius * Math.sin(angle1) * Math.cos(angle2);
-            const y = radius * Math.sin(angle1) * Math.sin(angle2);
-            const z = radius * Math.cos(angle1);
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
             
             const temp = this.pig.cloneNode();
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
@@ -86,11 +91,13 @@ class App extends Application {
             // this.scene.addNode(temp)
         }
         for (let i = 0; i < 60; i++) {
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.acos(2 * Math.random() - 1);
-            const x = radius * Math.sin(angle1) * Math.cos(angle2);
-            const y = radius * Math.sin(angle1) * Math.sin(angle2);
-            const z = radius * Math.cos(angle1);
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
 
             const temp = this.cow.cloneNode();
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
@@ -110,11 +117,13 @@ class App extends Application {
 
         this.arr_hose = [];
         for (let i = 0; i < 20; i++) {
-            const angle1 = Math.random() * 2 * Math.PI;
-            const angle2 = Math.acos(2 * Math.random() - 1);
-            const x = radius * Math.sin(angle1) * Math.cos(angle2);
-            const y = radius * Math.sin(angle1) * Math.sin(angle2);
-            const z = radius * Math.cos(angle1);
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
 
             const temp = this.hose.cloneNode();
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
@@ -130,6 +139,11 @@ class App extends Application {
             this.planet.addChild(temp)
             // this.scene.addNode(temp)
         }
+
+        //damo originalne pozicije da lohk nrdimo gravitacijo
+        for (const element of this.arr_zivali) {
+            element.originalPosition = vec3.clone(element.translation);
+          }
            
           
         if (!this.scene || !this.camera) {
@@ -143,7 +157,7 @@ class App extends Application {
         this.controller = new wasdController(this.center, this.canvas);
         this.controller2 = new mouseController(this.center_ufo, this.canvas, this.arr_zivali);
         //this.controller3 = new cameraController(this.camera, this.canvas);
-        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node);
+        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node, this.sky);
 
 
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
