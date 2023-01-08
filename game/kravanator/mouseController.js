@@ -51,7 +51,7 @@ export class mouseController {
         const doc = element.ownerDocument;
 
         
-        doc.addEventListener("wheel", event => console.info(event.deltaY));
+        //doc.addEventListener("wheel", event => console.info(event.deltaY));
         doc.addEventListener("wheel", event => {
             if(event.deltaY<0){
                 if(this.currentLimit<=this.limitUp){
@@ -88,10 +88,10 @@ export class mouseController {
 
         if(this.move){
             if(this.key){
-                vec3.add(acc, acc, up);
+                //vec3.add(acc, acc, up);
             }
             else{
-                vec3.sub(acc, acc, up);
+                //vec3.sub(acc, acc, up);
             }
         }
         if(!this.move){
