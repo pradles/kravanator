@@ -23,7 +23,7 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cone');
         this.hose = await this.loader.loadNode('hose');
-        this.flashlight = await this.loader.loadNode('hose');
+        this.center_ani = await this.loader.loadNode('Centr_ani');
 
         /*this.center_cow = await this.loader.loadNode('Center_cow');
         this.center_pig = await this.loader.loadNode('Center_pig');
@@ -196,7 +196,7 @@ class App extends Application {
         this.startTime = this.time;
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
-        this.controller.update(dt,this.pickable, this.arr_zivali);
+        this.controller.update(dt,this.pickable, this.arr_zivali, this.center_ani);
         //this.controller3.update(dt, this.arr_centru);
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();

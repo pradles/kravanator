@@ -71,101 +71,63 @@ export class wasdController{
         });
     }
 
-    update(dt, pickable, arr_zivali) {
+    update(dt, pickable, arr_zivali, center_ani) {
         const xyz = [this.node.globalMatrix[12],this.node.globalMatrix[13],this.node.globalMatrix[14]];
         const x = this.node.globalMatrix[12];
         const y = this.node.globalMatrix[13];
         const z = this.node.globalMatrix[14];
 
-        this.trenuta = this.node.globalMatrix;
-        //console.log(this.trenuta);
+        const rotationSpeed = Math.PI / 2;
+        const rotationAxis = vec3.fromValues(0, 1, 0);
+        let rotation = quat.identity(quat.create());
+        let targetRotation = quat.identity(quat.create());
 
-        //let q = quat.setAxisAngle([], [0, 1, 0], this.yaw);
-        //mat4.fromQuat(this.node.globalMatrix, q);
-        
-        //console.log("x: "+x+" y: "+y+" z: "+z );
-        // Calculate forward and right vectors from the y-orientation.
-        //const cos = Math.cos(this.yaw);
-        //const sin = Math.sin(this.yaw);
-        //const forward = vec3.transformQuat()
-        //const forward = vec3.transformQuat([], [1, 0, 0], quat);
-        //const forward = [-sin, 0, -cos];
-        //const right = [cos, 0, -sin];
-        let v = vec3.create()
         let b = vec3.cross(vec3.create(),this.n,this.t);
-        //console.log(b);
-
-        // Map user input to the acceleration vector.
-
-        /*this.time = performance.now() /1000;
-        let idle = quat.setAxisAngle(quat.create(), [1,0,0], [1,0,0]);
-        this.node.rotation = idle;*/
-        //let idle = quat.setAxisAngle(quat.create(), [1,1,1], this.i);
-        //let rot = quat.create();
-        //let nek = vec3.create();
-        
-        //console.log(mat4.create());
         if (this.keys['KeyW']) {
             let q = quat.setAxisAngle(quat.create(), b, dt);
             vec3.transformQuat(this.n,this.n,q);
             vec3.transformQuat(this.t,this.t,q);
-
-            /*matM = [
-                b[0],this.n[0],this.t[0],0,
-                b[1],this.n[1],this.n[1],0,
-                b[2],this.n[2],this.t[2],0,
-                0,0,0,1
-                   ];*/
-            //console.log(matM);
-            
-            //idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
-            //this.i+=0.01;
-
-            /*let q = quat.create();
-            quat.rotateY(q, q, dt * this.acceleration);
-            mat4.fromQuat(this.node.globalMatrix, q);
-            vec3.transformQuat(acc, forward, q);*/
-            //quat.rotateZ(rot, rot, this.yaw);
-            //vec3.transformQuat(acc,[1,0,0],this.i);
-            //vec3.sub(acc, acc, forward);
+            quat.rotateY(rotation, rotation, 40 * dt);
+            targetRotation = rotation;
         }
         if (this.keys['KeyS']) {
             let q = quat.setAxisAngle(quat.create(), b, -dt);
             vec3.transformQuat(this.n,this.n,q);
             vec3.transformQuat(this.t,this.t,q);
-            
-            
-            //idle = quat.setAxisAngle(quat.create(), [1,0,0], this.i);
-            //this.i-=0.01;
-            //quat.rotateZ(rot, rot, -this.yaw);
-            //vec3.add(acc, acc, forward);
+            quat.rotateY(rotation, rotation, 40 * -dt);
+            targetRotation = rotation;
         }
         if (this.keys['KeyD']) {
             let q = quat.setAxisAngle(quat.create(), this.t, dt);
             vec3.transformQuat(this.n,this.n,q);
             vec3.transformQuat(this.t,this.t,q);
-            
-            //idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
-            //this.j+=0.01;
-            //quat.rotateX(rot, rot, this.yaw);
-            //vec3.sub(acc, acc, right);
+            quat.rotateX(rotation, rotation, 40 * -dt);
+            targetRotation = rotation;
         }
         if (this.keys['KeyA']) {
             let q = quat.setAxisAngle(quat.create(), this.t, -dt);
             vec3.transformQuat(this.n,this.n,q);
             vec3.transformQuat(this.t,this.t,q);
-            
-            //idle = quat.setAxisAngle(quat.create(), [0,0,1], this.j);
-            //this.j-=0.01;
-            //quat.rotateX(rot, rot, -this.yaw);
-            //vec3.add(acc, acc, right);
+            quat.rotateX(rotation, rotation, 40 * dt);
+            targetRotation = rotation;
         }
+        //targetRotation = quat.multiply(quat.create(), targetRotation, quat.fromEuler(quat.create(),0,90,0))
+        quat.rotateX(targetRotation, targetRotation, -Math.PI / 2);
+        let rotation2 = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * 20*dt);
+        quat.multiply(targetRotation, center_ani.rotation, rotation2);
+        center_ani.rotation = quat.slerp(quat.create(), center_ani.rotation, targetRotation, 0.05);
+
+
+        //let rotation2 = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * 10*dt);
+        //center_ani.rotation = quat.multiply(quat.create(), center_ani.rotation, rotation2);
+        //rotation = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * dt);
+        //center_ani.rotation = quat.multiply(quat.create(), center_ani.rotation, rotation);
+        
+
         const up = this.n;
-        if(pickable.length > 0){
-            //console.log(vec3.distance(this.node.translation, pickable[0].translation));
-           
+        if(pickable.length > 0){           
             const acc = vec3.create();
-            
+
             if (this.keys['Space']) {
                 vec3.add(acc, acc, up); 
                 vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
@@ -182,10 +144,8 @@ export class wasdController{
         
         if (!this.keys['Space']) {
             arr_zivali.forEach(element => {
-              // Calculate the distance between the object's current position and its original position
               const distance = vec3.distance(element.translation, element.originalPosition);
               if (distance > 0.0025) {
-                // If the object is not at its original position, move it closer to it
                 const acc2 = vec3.create();
                 vec3.subtract(acc2, element.originalPosition, element.translation);
                 vec3.normalize(acc2, acc2);
@@ -199,40 +159,6 @@ export class wasdController{
             });
           }
 
-        // Update velocity based on acceleration (first line of Euler's method).
-        //vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
-
-        // If there is no user input, apply decay.
-        /*if (!this.keys['KeyW'] &&
-            !this.keys['KeyS'] &&
-            !this.keys['KeyD'] &&
-            !this.keys['KeyA'])
-        {
-            const decay = Math.exp(dt * Math.log(1 - this.decay));
-            vec3.scale(this.velocity, this.velocity, decay);
-        }
-
-        // Limit speed to prevent accelerating to infinity and beyond.
-        const speed = vec3.length(this.velocity);
-        if (speed > this.maxSpeed) {
-            vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
-        }
-
-        // Update translation based on velocity (second line of Euler's method).
-        this.node.translation = vec3.scaleAndAdd(vec3.create(),
-            this.node.translation, this.velocity, dt);*/
-
-        // Update rotation based on the Euler angles.
-        /*const rotation = quat.create();
-        quat.rotateY(rotation, rotation, this.yaw);
-        quat.rotateX(rotation, rotation, 0);
-        this.node.rotation = rotation;*/
-
-
-        //this.node.velocitySet(this.velocity);
-        //this.node.rotation = quat.multiply(quat.create(), rot, this.node.rotation);
-        //this.node.rotation = idle;
-        //console.log(mat4.getRotation(quat.create(),matM));
         this.matM = [
             b[0],b[1],b[2],0,
             this.n[0],this.n[1],this.n[2],0,
@@ -240,40 +166,13 @@ export class wasdController{
             0,0,0,1
                ];           
         this.node.rotation = mat4.getRotation(quat.create(),this.matM);
-        //this.node.translation = vec3.multiply(vec3.create(),xyz,[0,1,0])
     }
 
     pointermoveHandler(e) {
-        // Rotation can be updated through the pointermove handler.
-        // Given that pointermove is only called under pointer lock,
-        // movementX/Y will be available.
-
-        // Horizontal pointer movement causes camera panning (y-rotation),
-        // vertical pointer movement causes camera tilting (x-rotation).
         const dx = e.movementX * this.pointerSensitivity;
-
-        //const dy = e.movementY;
-        //this.pitch -= dy * this.pointerSensitivity;
-
         let q = quat.setAxisAngle(quat.create(), this.n, -dx);
             vec3.transformQuat(this.n,this.n,q);
             vec3.transformQuat(this.t,this.t,q);
-
-        /*const pi = Math.PI;
-        const twopi = pi * 2;
-        const halfpi = pi / 2;*/
-
-        // Limit pitch so that the camera does not invert on itself.
-        /*if (this.pitch > halfpi) {
-            this.pitch = halfpi;
-        }
-        if (this.pitch < -halfpi) {
-            this.pitch = -halfpi;
-        }*/
-
-        // Constrain yaw to the range [0, pi * 2]
-        //this.yaw = ((this.yaw % twopi) + twopi) % twopi;
-        //this.leftRight = dx;
     }
 
     keydownHandler(e) {

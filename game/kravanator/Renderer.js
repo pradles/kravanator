@@ -201,8 +201,15 @@ export class Renderer {
         gl.uniform3fv(uniforms.uLight.attenuation, light.attenuation);*/
 
         const mvpMatrix = this.getViewProjectionMatrix(camera);
+
         for (const node of scene.nodes) {
-            this.renderNode(node, mvpMatrix);
+            if(node.name == 'Cube.002')
+                this.renderNode(node, mvpMatrix);
+        }
+
+        for (const node of scene.nodes) {
+            if(node.name != 'Cube.002')
+                this.renderNode(node, mvpMatrix);
         }
     }
 
@@ -225,7 +232,7 @@ export class Renderer {
             gl.disable(gl.LIGHTING);*/
 
             gl.disable(gl.BLEND);
-            if (node.name === 'Cone' || node.name === 'flashlight') {
+            if (node.name === 'Cone' || node.name === 'flashlight' || node.name === 'Capsule_2' || node.name === 'Capsule') {
                 gl.enable(gl.BLEND);
                 gl.blendFuncSeparate(gl.SRC_COLOR, gl.DST_COLOR, gl.ONE, gl.ZERO);
             }
