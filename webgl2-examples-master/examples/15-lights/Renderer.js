@@ -33,12 +33,6 @@ export class Renderer {
         gl.uniform3fv(uniforms.uCameraPosition,
             mat4.getTranslation(vec3.create(), camera.globalMatrix));
 
-        gl.uniform3fv(uniforms.uLight.color,
-            vec3.scale(vec3.create(), light.color, light.intensity / 255));
-        gl.uniform3fv(uniforms.uLight.position,
-            mat4.getTranslation(vec3.create(), light.globalMatrix));
-        gl.uniform3fv(uniforms.uLight.attenuation, light.attenuation);
-
         this.renderNode(scene, scene.globalMatrix);
     }
 

@@ -6,7 +6,7 @@ import { GLTFLoader } from './GLTFLoader.js';
 import { Renderer } from './Renderer.js';
 import { wasdController } from './wasdController2.js';
 import { mouseController } from './mouseController.js';
-import { cameraController } from './cameraController.js';
+//import { npc_Controller } from './npc_Controller.js';
 import { Physics } from './Physics.js';
 
 class App extends Application {
@@ -23,8 +23,18 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cone');
         this.hose = await this.loader.loadNode('hose');
-        this.flashlight = await this.loader.loadNode('flashlight');
+        this.flashlight = await this.loader.loadNode('hose');
+
+        /*this.center_cow = await this.loader.loadNode('Center_cow');
+        this.center_pig = await this.loader.loadNode('Center_pig');
+        this.center_duck = await this.loader.loadNode('Center_duck');
+        this.center_hose = await this.loader.loadNode('Center_hose');*/
         this.sky = await this.loader.loadNode('Cube.002');
+        /*this.light = new Node();
+        this.light.color = [255, 255, 255];
+        this.light.intensity = 1;
+        this.light.attenuation = [0.001, 0, 0.3];
+        this.center_ufo.addChild(this.light);*/
         
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
@@ -40,6 +50,7 @@ class App extends Application {
         }); 
 
         this.arr_zivali = [];
+        //this.arr_centru = [];
         let radius = 1
 
         for (let i = 0; i < 120; i++) {
@@ -62,10 +73,13 @@ class App extends Application {
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, -90));
 
             //temp.rotation = quat.mul(quat.create(), quat.mul(quat.create(), rot, temp.rotation), quat.invert(quat.create(), rot));
-
-            this.arr_zivali.push(temp)
-            this.planet.addChild(temp)
-            // this.scene.addNode(temp)
+            //const centr = this.center_duck.cloneNode();
+            //this.arr_centru.push(centr);
+            this.arr_zivali.push(temp);
+            //this.planet.addChild(centr)
+            this.planet.addChild(temp);
+            //this.scene.addNode(centr)
+            //this.scene.addNode(temp)
         }
         for (let i = 0; i < 90; i++) {
             const u = Math.random();
@@ -85,10 +99,12 @@ class App extends Application {
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), -90, 0, 0));
 
-            
+            //const centr = this.center_pig.cloneNode();
+            //this.arr_centru.push(centr);
             this.arr_zivali.push(temp)
+            //this.planet.addChild(centr)
             this.planet.addChild(temp)
-            // this.scene.addNode(temp)
+            //this.scene.addNode(centr)
         }
         for (let i = 0; i < 60; i++) {
             const u = Math.random();
@@ -108,10 +124,12 @@ class App extends Application {
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
 
-            
+            //const centr = this.center_cow.cloneNode();
+            //this.arr_centru.push(centr);
             this.arr_zivali.push(temp)
+            //this.planet.addChild(centr)
             this.planet.addChild(temp)
-            // this.scene.addNode(temp)
+            //this.scene.addNode(centr)
         }
 
 
@@ -134,10 +152,12 @@ class App extends Application {
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
 
-            
+            //const centr = this.center_hose.cloneNode();
+            //this.arr_centru.push(centr);
             this.arr_hose.push(temp)
             this.planet.addChild(temp)
-            // this.scene.addNode(temp)
+            //this.scene.addNode(centr)
+            //this.scene.addNode(temp)
         }
 
         //damo originalne pozicije da lohk nrdimo gravitacijo
@@ -155,10 +175,9 @@ class App extends Application {
         }
 
         this.controller = new wasdController(this.center, this.canvas);
-        this.controller2 = new mouseController(this.center_ufo, this.canvas, this.arr_zivali);
-        //this.controller3 = new cameraController(this.camera, this.canvas);
-        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node, this.sky);
-
+        this.controller2 = new mouseController(this.center_ufo, this.canvas);
+        //this.controller3 = new npc_Controller(this.canvas);
+        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node, this.sky, this.arr_hose, this.cylinder);
 
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
@@ -178,9 +197,9 @@ class App extends Application {
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
         this.controller.update(dt,this.pickable, this.arr_zivali);
+        //this.controller3.update(dt, this.arr_centru);
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
-        //this.controller3.update(dt);
     }
 
     render() {

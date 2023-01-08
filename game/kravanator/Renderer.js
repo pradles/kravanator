@@ -186,7 +186,7 @@ export class Renderer {
         return vpMatrix;
     }
 
-    render(scene, camera) {
+    render(scene, camera, light) {
         const gl = this.gl;
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -194,14 +194,15 @@ export class Renderer {
         const { program, uniforms } = this.programs.simple;
         gl.useProgram(program);
 
+        /*gl.uniform3fv(uniforms.uLight.color,
+            vec3.scale(vec3.create(), light.color, light.intensity / 255));
+        gl.uniform3fv(uniforms.uLight.position,
+            mat4.getTranslation(vec3.create(), light.globalMatrix));
+        gl.uniform3fv(uniforms.uLight.attenuation, light.attenuation);*/
+
         const mvpMatrix = this.getViewProjectionMatrix(camera);
         for (const node of scene.nodes) {
-            if (!(node.name === 'Cone' || node.name === 'flashlight'))
-                this.renderNode(node, mvpMatrix);
-        }
-        for (const node of scene.nodes) {
-            if (node.name === 'Cone' || node.name === 'flashlight')
-                this.renderNode(node, mvpMatrix);
+            this.renderNode(node, mvpMatrix);
         }
     }
 
@@ -214,6 +215,15 @@ export class Renderer {
         mat4.mul(mvpMatrix, mvpMatrix, node.localMatrix);
 
         if (node.mesh) {
+
+            /*if(node.name === 'Spot'){
+                gl.enable(gl.LIGHTING);
+                gl.lightfv(gl.LIGHT0, gl.DIFFUSE, [1.0, 1.0, 1.0, 1.0]); // White light
+                gl.lightfv(gl.LIGHT0, gl.SPECULAR, [1.0, 1.0, 1.0, 1.0]); // White specular highlights
+                gl.lightfv(gl.LIGHT0, gl.AMBIENT, [0.2, 0.2, 0.2, 1.0]); // Low ambient light
+            }
+            gl.disable(gl.LIGHTING);*/
+
             gl.disable(gl.BLEND);
             if (node.name === 'Cone' || node.name === 'flashlight') {
                 gl.enable(gl.BLEND);

@@ -2,13 +2,12 @@ import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 export class wasdController{
 
-    constructor(node, domElement, arr_zivali) {
+    constructor(node, domElement) {
 
         // The node that this controller controls.
         this.node = node;
         // The activation DOM element.
         this.domElement = domElement;
-        this.arr_zivali = arr_zivali;
 
         // This map is going to hold the pressed state for every key.
         this.keys = {};

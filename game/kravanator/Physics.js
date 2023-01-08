@@ -4,7 +4,7 @@ import { Player } from '../common/engine/player.js';
 
 export class Physics extends Player{
 
-    constructor(scene, planet, center_ufo, cone, tab_node, sky) {
+    constructor(scene, planet, center_ufo, cone, tab_node, sky, arr_hose, cylinder) {
         super(Player)
         this.scene = scene;
         this.planet = planet;
@@ -14,23 +14,28 @@ export class Physics extends Player{
         this.pickable;
         this.player = new Player();
         this.sky = sky;
+        this.arr_hose = arr_hose;
+        this.cylinder = cylinder;
     }
 
     update(dt) {
         this.pickable = [];
-            // After moving, check for collision with every other node.
-        this.scene.traverse(other => {
-            
+        this.scene.traverse(other => { 
             if (other !== this.planet && other !== this.sky && !this.tab_node.includes(other)) {
                 this.resolveCollision(this.center_ufo, other);
                 if(other.value <= this.player.lvl && other.value !== 0)
                     this.setPickable(this.cone, other);
             }
-            if(other.name === 'flashlight') {
-                this.checkOver(this.center_ufo, other);
-            }
-
+                     
         });
+        this.arr_hose.forEach(element => {
+            element.traverse(other => {
+                this.checkOver(this.center_ufo, other); 
+                this.checkOver(this.cylinder, other); 
+            });
+        });
+        
+
         return this.pickable;
     }
 

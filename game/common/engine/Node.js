@@ -23,6 +23,7 @@ export class Node {
             min: [-0.2, -0.2, -0.2],
             max: [0.2, 0.2, 0.2],            
         };
+        
         if(options.name)
             this.name = options.name
 
