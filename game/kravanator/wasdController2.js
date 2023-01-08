@@ -111,17 +111,10 @@ export class wasdController{
             quat.rotateX(rotation, rotation, 40 * dt);
             targetRotation = rotation;
         }
-        //targetRotation = quat.multiply(quat.create(), targetRotation, quat.fromEuler(quat.create(),0,90,0))
         quat.rotateX(targetRotation, targetRotation, -Math.PI / 2);
         let rotation2 = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * 20*dt);
         quat.multiply(targetRotation, center_ani.rotation, rotation2);
         center_ani.rotation = quat.slerp(quat.create(), center_ani.rotation, targetRotation, 0.05);
-
-
-        //let rotation2 = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * 10*dt);
-        //center_ani.rotation = quat.multiply(quat.create(), center_ani.rotation, rotation2);
-        //rotation = quat.setAxisAngle(quat.create(), rotationAxis, rotationSpeed * dt);
-        //center_ani.rotation = quat.multiply(quat.create(), center_ani.rotation, rotation);
         
 
         const up = this.n;

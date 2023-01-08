@@ -21,7 +21,7 @@ export class Physics extends Player{
     update(dt) {
         this.pickable = [];
         this.scene.traverse(other => { 
-            if (other !== this.planet && other !== this.sky && !this.tab_node.includes(other)) {
+            if (other !== this.planet && other !== this.sky && !this.tab_node.includes(other) && !other.name.includes('tree')) {
                 this.resolveCollision(this.center_ufo, other);
                 if(other.value <= this.player.lvl && other.value !== 0)
                     this.setPickable(this.cone, other);
