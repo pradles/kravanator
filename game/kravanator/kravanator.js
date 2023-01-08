@@ -1,4 +1,5 @@
 import { Application } from '../common/engine/Application.js';
+import { Player } from '../common/engine/player.js';
 import { quat, vec3, mat4 } from '../lib/gl-matrix-module.js';
 
 
@@ -12,6 +13,9 @@ import { Physics } from './Physics.js';
 class App extends Application {
 
     async start() {
+        this.player = new Player();
+        this.timer = 100
+
         this.loader = new GLTFLoader();
         await this.loader.load('../common/models/planet_cam_ufo.gltf');
 
@@ -177,10 +181,11 @@ class App extends Application {
         this.controller = new wasdController(this.center, this.canvas);
         this.controller2 = new mouseController(this.center_ufo, this.canvas);
         //this.controller3 = new npc_Controller(this.canvas);
-        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node, this.sky, this.arr_hose, this.cylinder);
+        this.physics = new Physics(this.scene, this.planet, this.center_ufo, this.cylinder, tab_node, this.sky, this.arr_hose, this.cylinder, this.player);
 
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
+        document.getElementById('timer').innerHTML = this.timer;
 
         this.time = performance.now();
         this.startTime = this.time;
@@ -194,12 +199,24 @@ class App extends Application {
         this.time = performance.now();
         const dt = (this.time - this.startTime) * 0.001;
         this.startTime = this.time;
+        
+        if (this.time - this.lastTime >= 1000 || !this.lastTime) {
+            this.lastTime = this.time;
+            this.timer--;
+        }
+
+        if (this.timer == 0) {
+            alert("Zmanjkalo vam je časa. Več sreče prihodnjič.\nDosegel si " + this.player.points + " točk.")
+            location.replace("../index.html")
+        }
+
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
         this.controller.update(dt,this.pickable, this.arr_zivali, this.center_ani);
         //this.controller3.update(dt, this.arr_centru);
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();
+        document.getElementById('timer').innerHTML = this.timer;
     }
 
     render() {

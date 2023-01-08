@@ -89,28 +89,28 @@ export class wasdController {
 
         let b = vec3.cross(vec3.create(), this.n, this.t);
         if (this.keys['KeyW']) {
-            let q = quat.setAxisAngle(quat.create(), b, dt);
+            let q = quat.setAxisAngle(quat.create(), b, dt/2);
             vec3.transformQuat(this.n, this.n, q);
             vec3.transformQuat(this.t, this.t, q);
             quat.rotateY(rotation, rotation, 40 * dt);
             targetRotation = rotation;
         }
         if (this.keys['KeyS']) {
-            let q = quat.setAxisAngle(quat.create(), b, -dt);
+            let q = quat.setAxisAngle(quat.create(), b, -dt/2);
             vec3.transformQuat(this.n, this.n, q);
             vec3.transformQuat(this.t, this.t, q);
             quat.rotateY(rotation, rotation, 40 * -dt);
             targetRotation = rotation;
         }
         if (this.keys['KeyD']) {
-            let q = quat.setAxisAngle(quat.create(), this.t, dt);
+            let q = quat.setAxisAngle(quat.create(), this.t, dt/2);
             vec3.transformQuat(this.n, this.n, q);
             vec3.transformQuat(this.t, this.t, q);
             quat.rotateX(rotation, rotation, 40 * -dt);
             targetRotation = rotation;
         }
         if (this.keys['KeyA']) {
-            let q = quat.setAxisAngle(quat.create(), this.t, -dt);
+            let q = quat.setAxisAngle(quat.create(), this.t, -dt/2);
             vec3.transformQuat(this.n, this.n, q);
             vec3.transformQuat(this.t, this.t, q);
             quat.rotateX(rotation, rotation, 40 * dt);
@@ -178,7 +178,7 @@ export class wasdController {
 
     pointermoveHandler(e) {
         const dx = e.movementX * this.pointerSensitivity;
-        let q = quat.setAxisAngle(quat.create(), this.n, -dx);
+        let q = quat.setAxisAngle(quat.create(), this.n, -dx/2);
         vec3.transformQuat(this.n, this.n, q);
         vec3.transformQuat(this.t, this.t, q);
     }

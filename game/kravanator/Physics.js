@@ -2,20 +2,19 @@ import { vec3, mat4 } from '../lib/gl-matrix-module.js';
 import { Player } from '../common/engine/player.js';
 
 
-export class Physics extends Player{
+export class Physics {
 
-    constructor(scene, planet, center_ufo, cone, tab_node, sky, arr_hose, cylinder) {
-        super(Player)
+    constructor(scene, planet, center_ufo, cone, tab_node, sky, arr_hose, cylinder, player) {
         this.scene = scene;
         this.planet = planet;
         this.center_ufo = center_ufo;
         this.cone = cone;
         this.tab_node = tab_node;
         this.pickable;
-        this.player = new Player();
         this.sky = sky;
         this.arr_hose = arr_hose;
         this.cylinder = cylinder;
+        this.player = player;
     }
 
     update(dt) {
@@ -149,7 +148,8 @@ export class Physics extends Player{
             return;
         }
         
-        console.log("GAME OVER");
+        alert("Na žalost te je kmet ujel. Več sreče prihodnjič.\nDosegel si " + this.player.points + " točk.")
+        location.replace("../index.html")
     }
 
 }
