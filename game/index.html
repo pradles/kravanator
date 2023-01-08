@@ -8,10 +8,42 @@
 
     <link rel="stylesheet" type="text/css" href="common/style.css">
     <link rel="stylesheet" type="text/css" href="index.css">
+    <style>
+        .menu {
+            display: flex;
+            flex-direction: column;
+            margin: 10vh auto;
+            text-align: center;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 5vh 0;
+        }
+
+
+        button {
+            border: none;
+            background-color: white;
+            width: 20vw;
+            font-size: 2em;
+            margin: 1vh 0;
+            border: 2px solid coral;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            box-shadow: 5px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Kravanator: ugrabitev simulator</h1>
-    <a href="kravanator/kravanator.html">Kravanator</a>
-    
+    <div class="menu">
+        <img src="./common/assets/menu.png">
+        <h1>KRAVANATOR: UGRABITEV SIMULATOR</h1>
+        <button onclick="location.replace('kravanator/kravanator.html')">PLAY</a>
+        <button onclick="alert('Get points by collecting animals, but do not get hit by the farmers flashlight. You have 100 seconds.\n\nControls:\nWASD - movement\nMOUSE - look around\nSPACE - pull animals up')">INSTRUCTIONS</button>
+    </div>
 </body>
 </html>

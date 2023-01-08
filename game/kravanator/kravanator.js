@@ -27,7 +27,12 @@ class App extends Application {
         this.ufo = await this.loader.loadNode('UFO');
         this.cylinder = await this.loader.loadNode('Cone');
         this.hose = await this.loader.loadNode('hose');
+        this.planet.addChild(this.hose)
         this.center_ani = await this.loader.loadNode('Centr_ani');
+
+        this.light = await this.loader.loadNode('Spot');
+        this.light.color = [0.00038623993168585, 1, 0.003500560997053981]
+
 
         /*this.center_cow = await this.loader.loadNode('Center_cow');
         this.center_pig = await this.loader.loadNode('Center_pig');
@@ -39,7 +44,7 @@ class App extends Application {
         this.light.intensity = 1;
         this.light.attenuation = [0.001, 0, 0.3];
         this.center_ufo.addChild(this.light);*/
-        
+
         this.pig = await this.loader.loadNode('pig');
         this.pig.value = 2;
         this.cow = await this.loader.loadNode('cow');
@@ -51,7 +56,7 @@ class App extends Application {
         let tab_node = []
         this.center_ufo.traverse(node_ufo => {
             tab_node.push(node_ufo);
-        }); 
+        });
 
         this.arr_zivali = [];
         //this.arr_centru = [];
@@ -71,7 +76,7 @@ class App extends Application {
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             temp.translation = [x, y, z];
             const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
-            
+
             const angle = vec3.angle(prej, potem);
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, -90));
@@ -93,12 +98,12 @@ class App extends Application {
             const x = radius * Math.sin(phi) * Math.cos(theta);
             const y = radius * Math.sin(phi) * Math.sin(theta);
             const z = radius * Math.cos(phi);
-            
+
             const temp = this.pig.cloneNode();
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             temp.translation = [x, y, z];
             const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
-            
+
             const angle = vec3.angle(prej, potem);
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), -90, 0, 0));
@@ -123,7 +128,7 @@ class App extends Application {
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             temp.translation = [x, y, z];
             const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
-            
+
             const angle = vec3.angle(prej, potem);
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
@@ -151,7 +156,7 @@ class App extends Application {
             const prej = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
             temp.translation = [x, y, z];
             const potem = vec3.normalize(vec3.create(), vec3.fromValues(temp.translation[0], temp.translation[1], temp.translation[2]));
-            
+
             const angle = vec3.angle(prej, potem);
             const axis = vec3.cross(vec3.create(), prej, potem);
             temp.rotation = quat.mul(quat.create(), quat.setAxisAngle(quat.create, vec3.normalize(axis, axis), angle), quat.fromEuler(quat.create(), 0, 0, 0));
@@ -167,9 +172,9 @@ class App extends Application {
         //damo originalne pozicije da lohk nrdimo gravitacijo
         for (const element of this.arr_zivali) {
             element.originalPosition = vec3.clone(element.translation);
-          }
-           
-          
+        }
+
+
         if (!this.scene || !this.camera) {
             throw new Error('Scene or Camera not present in glTF');
         }
@@ -199,7 +204,7 @@ class App extends Application {
         this.time = performance.now();
         const dt = (this.time - this.startTime) * 0.001;
         this.startTime = this.time;
-        
+
         if (this.time - this.lastTime >= 1000 || !this.lastTime) {
             this.lastTime = this.time;
             this.timer--;
@@ -212,7 +217,7 @@ class App extends Application {
 
         this.pickable = this.physics.update(dt);
         this.controller2.update(dt);
-        this.controller.update(dt,this.pickable, this.arr_zivali, this.center_ani);
+        this.controller.update(dt, this.pickable, this.arr_zivali, this.center_ani);
         //this.controller3.update(dt, this.arr_centru);
         document.getElementById('score').innerHTML = this.physics.player.points.toString();
         document.getElementById('level').innerHTML = this.physics.player.lvl.toString();

@@ -223,13 +223,15 @@ export class Renderer {
 
         if (node.mesh) {
 
-            /*if(node.name === 'Spot'){
-                gl.enable(gl.LIGHTING);
-                gl.lightfv(gl.LIGHT0, gl.DIFFUSE, [1.0, 1.0, 1.0, 1.0]); // White light
-                gl.lightfv(gl.LIGHT0, gl.SPECULAR, [1.0, 1.0, 1.0, 1.0]); // White specular highlights
-                gl.lightfv(gl.LIGHT0, gl.AMBIENT, [0.2, 0.2, 0.2, 1.0]); // Low ambient light
-            }
-            gl.disable(gl.LIGHTING);*/
+            // gl.disable(gl.LIGHTING);
+            // if(node.name === 'Spot'){
+            //     gl.enable(gl.LIGHTING);
+            //     gl.lightfv(gl.LIGHT0, gl.DIFFUSE, node.color); // White light
+            //     gl.lightfv(gl.LIGHT0, gl.SPECULAR, node.color); // White specular highlights
+            //     gl.lightfv(gl.LIGHT0, gl.AMBIENT, [0.2, 0.2, 0.2, 1.0]); // Low ambient light
+            //     gl.lightfv(gl.LIGHT0, gl.POSITION, node.globalMatrix);
+            // }
+
 
             gl.disable(gl.BLEND);
             if (node.name === 'Cone' || node.name === 'flashlight' || node.name === 'Capsule_2' || node.name === 'Capsule') {
